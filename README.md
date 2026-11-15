@@ -19,3 +19,5 @@
 - 歌声・音声モデル: JVNV Corpus（CC BY-SA 4.0）由来の JVNV F2 / itoolsjp Style-Bert-VITS2 Voice Assets（東部湯の丸・さくら徳次郎・横浜青葉）
 - BGM ピアノ音源: Salamander Grand Piano（Alexander Holm、CC BY 3.0）
 - ライブラリ: onnxruntime-web（MIT）、mp4-muxer（MIT）、lamejs（LGPL-2.1）、Comlink（Apache-2.0）
+
+<!-- Pages build trigger: 2026-11-15 -->
