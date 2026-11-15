@@ -1,0 +1,3499 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="data:," />
+    <title>AMU VOICE STUDIO</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500;700;800&family=Shippori+Mincho:wght@500;700;800&display=swap" rel="stylesheet" />
+    <style>
+      button, [role="button"], select, summary, input:not([type="checkbox"], [type="radio"]) { min-height: 2rem; }
+    </style>
+    <style>
+      :root{
+        --bg:#FFFBF2; --card:#FFFFFF; --ink:#2E3A34; --ink-soft:#5C6B62;
+        --accent:#12B886; --accent-deep:#0B9469; --peach:#FFD9B3; --yellow:#FFE9A8;
+        --line:#EADFD2; --shadow:0 10px 30px rgba(120,90,40,.10);
+        --radius:22px;
+      }
+      @media (prefers-color-scheme: dark){
+        :root{
+          --bg:#16211C; --card:#1F2D26; --ink:#EDF5F0; --ink-soft:#A9BDB2;
+          --accent:#2BD39B; --accent-deep:#2BD39B; --peach:#6B4A26; --yellow:#6B5A26;
+          --line:#33463B; --shadow:0 10px 30px rgba(0,0,0,.35);
+        }
+      }
+      *{ box-sizing:border-box; }
+      html,body{ margin:0; padding:0; width:100%; max-width:100%; }
+      html{ overflow-x:hidden; overflow-x:clip; }
+      body{
+        background:var(--bg); color:var(--ink);
+        font-family:"M PLUS Rounded 1c","Hiragino Maru Gothic ProN","Hiragino Sans",system-ui,sans-serif;
+        -webkit-font-smoothing:antialiased;
+        overflow-x:hidden; overflow-x:clip;
+        overflow-wrap:break-word;
+      }
+      img,video,canvas,svg{ max-width:100%; }
+      .wrap{
+        width:100%; max-width:1180px; margin:0 auto; padding:16px 14px 40px;
+        display:grid; grid-template-columns:minmax(0,1fr); gap:16px;
+      }
+      .wrap > *{ min-width:0; max-width:100%; }
+      @media (min-width:920px){
+        .wrap{ grid-template-columns:minmax(0,1.55fr) minmax(320px,1fr); align-items:start; padding-top:22px; }
+        .stage{ position:sticky; top:16px; }
+      }
+      .card{
+        background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
+        box-shadow:var(--shadow); padding:16px;
+        min-width:0; max-width:100%; overflow-wrap:break-word;
+      }
+      .lead{ margin:2px 2px 12px; font-size:15px; line-height:1.7; color:var(--ink-soft); font-weight:500; min-width:0; max-width:100%; overflow-wrap:anywhere; }
+      .lead strong{ color:var(--ink); }
+      .canvasBox{
+        border-radius:16px; overflow:hidden; background:#0d1512; line-height:0;
+        max-width:100%; min-width:0;
+      }
+      canvas#stage{ width:100%; max-width:100%; height:auto; display:block; }
+      .transport{ display:flex; align-items:center; gap:10px; margin-top:12px; flex-wrap:wrap; width:100%; max-width:100%; min-width:0; }
+      .transport input[type="range"]{ flex:1 1 120px; min-width:0; max-width:100%; }
+      .tbtn{
+        border:1px solid var(--line); background:var(--bg); color:var(--ink);
+        border-radius:999px; padding:8px 16px; font:inherit; font-weight:700; font-size:14px;
+        cursor:pointer; display:inline-flex; align-items:center; gap:7px; min-height:40px;
+        flex:0 1 auto; min-width:0; max-width:100%; white-space:normal;
+      }
+      .tbtn svg{ width:13px; height:13px; fill:currentColor; flex:0 0 auto; }
+      .meta{ font-size:12.5px; color:var(--ink-soft); font-weight:700; white-space:nowrap; min-width:0; max-width:100%; }
+      .fps{ background:var(--yellow); color:#6B5510; border-radius:999px; padding:3px 10px; font-size:12px; font-weight:800; flex:0 0 auto; }
+      @media (prefers-color-scheme: dark){ .fps{ color:#FFE9A8; background:#3A3220; } }
+
+      label.flabel{ display:block; font-weight:800; font-size:14px; margin:18px 0 8px; max-width:100%; min-width:0; overflow-wrap:anywhere; }
+      label.flabel:first-child{ margin-top:2px; }
+      label.flabel .val{ color:var(--accent-deep); font-weight:800; }
+      textarea{
+        width:100%; max-width:100%; min-width:0; border:2px solid var(--line); border-radius:16px; background:var(--bg);
+        color:var(--ink); font:inherit; font-weight:700; font-size:16px; line-height:1.65;
+        padding:12px 14px; resize:vertical; min-height:150px;
+      }
+      textarea:focus{ outline:none; border-color:var(--accent); }
+      .rowbetween{ display:flex; justify-content:space-between; align-items:center; margin-top:8px; gap:8px; flex-wrap:wrap; width:100%; max-width:100%; min-width:0; }
+      .count{ font-size:12.5px; color:var(--ink-soft); font-weight:700; flex:1 1 auto; min-width:0; overflow-wrap:anywhere; }
+      .ghost{
+        border:none; background:none; color:var(--accent-deep); font:inherit; font-weight:800;
+        font-size:13px; cursor:pointer; padding:8px 6px; min-height:36px;
+        flex:0 1 auto; min-width:0; max-width:100%; white-space:normal;
+      }
+      .seg{ display:flex; gap:8px; flex-wrap:wrap; width:100%; max-width:100%; min-width:0; }
+      .seg button{
+        flex:1 1 0; min-width:0; max-width:100%;
+        border:2px solid var(--line); background:var(--bg); color:var(--ink);
+        border-radius:14px; padding:10px 8px; font:inherit; font-weight:800; font-size:14px;
+        cursor:pointer; min-height:44px;
+        white-space:normal; overflow-wrap:anywhere; word-break:break-word; text-align:center;
+      }
+      .seg button[aria-pressed="true"]{ border-color:var(--accent); background:#E5F8F1; color:#0B6B4C; }
+      @media (prefers-color-scheme: dark){ .seg button[aria-pressed="true"]{ background:#173B2E; color:#7CE7C4; } }
+      .seg button small{ display:block; font-size:11px; font-weight:700; color:var(--ink-soft); margin-top:2px; overflow-wrap:anywhere; word-break:break-word; }
+      .seg button[aria-pressed="true"] small{ color:inherit; opacity:.75; }
+      input[type="range"]{ accent-color:var(--accent); height:36px; min-width:0; max-width:100%; }
+      .durRange{ width:100%; max-width:100%; min-width:0; }
+      .primary{
+        width:100%; max-width:100%; min-width:0; margin-top:22px; border:none; border-radius:16px; cursor:pointer;
+        background:var(--accent); color:#fff; font:inherit; font-weight:800; font-size:16.5px;
+        padding:15px 12px; min-height:54px; box-shadow:0 8px 20px rgba(18,184,134,.30);
+        white-space:normal; overflow-wrap:anywhere;
+      }
+      .primary:disabled{ opacity:.55; cursor:default; box-shadow:none; }
+      .exportArea{ margin-top:14px; display:none; max-width:100%; min-width:0; }
+      .exportArea.show{ display:block; }
+      .bar{ height:12px; border-radius:999px; background:var(--line); overflow:hidden; max-width:100%; min-width:0; }
+      .bar > div{ height:100%; width:0%; max-width:100%; background:var(--accent); border-radius:999px; transition:width .15s linear; }
+      .estatus{ font-size:13.5px; font-weight:700; color:var(--ink-soft); margin-top:9px; line-height:1.6; max-width:100%; min-width:0; overflow-wrap:anywhere; word-break:break-word; }
+      .diagBox{ margin-top:10px; border:1px dashed var(--line); border-radius:12px; padding:8px 12px; max-width:100%; min-width:0; }
+      .diagBox summary{ font-size:12.5px; font-weight:800; color:var(--ink-soft); cursor:pointer; padding:2px 0; }
+      .diagBox pre{ margin:6px 0 2px; font-size:11px; line-height:1.65; color:var(--ink-soft); white-space:pre-wrap; overflow-wrap:anywhere; word-break:break-word; max-width:100%; min-width:0; }
+      .resultVideo{ width:100%; max-width:100%; border-radius:14px; margin-top:12px; display:none; background:#000; }
+      .dl{
+        display:none; margin-top:10px; text-align:center; text-decoration:none;
+        background:var(--yellow); color:#6B5510; font-weight:800; border-radius:14px; padding:13px; min-height:48px;
+        max-width:100%; min-width:0; white-space:normal; overflow-wrap:anywhere;
+        border:none; width:100%; font:inherit; font-size:15px; cursor:pointer;
+      }
+      .dl:active{ opacity:.75; }
+      @media (prefers-color-scheme: dark){ .dl{ color:#FFE9A8; background:#3A3220; } }
+      .cancelBtn{
+        display:none; margin-top:8px; width:100%; max-width:100%; min-width:0; border:1px solid var(--line); background:var(--bg);
+        color:var(--ink); border-radius:12px; font:inherit; font-weight:700; padding:10px; cursor:pointer; min-height:44px;
+        white-space:normal; overflow-wrap:anywhere;
+      }
+      .note{ font-size:12.5px; color:var(--ink-soft); line-height:1.7; margin:12px 2px 0; font-weight:500; max-width:100%; min-width:0; overflow-wrap:anywhere; word-break:break-word; }
+      .wrapInfo{ margin-top:10px; border:1px dashed var(--line); border-radius:14px; padding:10px 12px; font-size:12.5px; line-height:1.75; color:var(--ink-soft); font-weight:700; display:none; max-width:100%; min-width:0; overflow-wrap:anywhere; }
+      .wrapInfo.show{ display:block; }
+      .wrapInfo .wi-head{ color:var(--ink); font-weight:800; overflow-wrap:anywhere; word-break:break-word; }
+      .wrapInfo .wi-line{ white-space:normal; overflow:visible; text-overflow:clip; overflow-wrap:anywhere; word-break:break-word; }
+      .narrBox{ margin-top:22px; border-top:1px solid var(--line); padding-top:4px; max-width:100%; min-width:0; }
+      .narrBox select{
+        border:2px solid var(--line); background:var(--bg); color:var(--ink); border-radius:12px;
+        font:inherit; font-weight:700; font-size:14px; padding:8px 10px; min-height:40px; max-width:100%; min-width:0;
+        flex:1 1 160px;
+      }
+      /* 話者プルダウン（両タブ共通） */
+      select.speakerSel{
+        border:2px solid var(--line); background:var(--bg); color:var(--ink); border-radius:12px;
+        font:inherit; font-weight:700; font-size:14.5px; padding:9px 10px; min-height:46px;
+        width:100%; max-width:100%; min-width:0;
+      }
+      select.speakerSel:focus{ outline:none; border-color:var(--accent); }
+      .narrRow{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-top:8px; width:100%; max-width:100%; min-width:0; }
+      .narrRow > label{ flex:0 1 auto; min-width:0; max-width:100%; overflow-wrap:anywhere; }
+      .narrRow input[type="range"]{ flex:1 1 120px; min-width:0; }
+      .subBtn{
+        border:2px solid var(--accent); background:#E5F8F1; color:#0B6B4C; border-radius:14px;
+        font:inherit; font-weight:800; font-size:14.5px; padding:11px 14px; cursor:pointer; min-height:46px; width:100%;
+        max-width:100%; min-width:0; white-space:normal; overflow-wrap:anywhere;
+      }
+      @media (prefers-color-scheme: dark){ .subBtn{ background:#173B2E; color:#7CE7C4; } }
+      .subBtn:disabled{ opacity:.5; cursor:default; }
+      .loadProg{ margin-top:12px; display:none; max-width:100%; min-width:0; }
+      .loadProg.show{ display:block; }
+      .loadProgLabel{ font-size:13px; font-weight:800; color:var(--ink); margin:8px 0 0; max-width:100%; min-width:0; overflow-wrap:anywhere; word-break:break-word; }
+      .stages{ list-style:none; margin:10px 0 0; padding:0; font-size:13px; font-weight:700; color:var(--ink-soft); width:100%; max-width:100%; min-width:0; }
+      .stages li{ display:flex; align-items:center; gap:9px; padding:6px 0; line-height:1.5; flex-wrap:wrap; width:100%; max-width:100%; min-width:0; }
+      .stages .st-ic{ flex:0 0 auto; width:20px; height:20px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-size:11.5px; font-weight:800; border:2px solid var(--line); color:var(--ink-soft); background:var(--bg); }
+      .stages .st-name{ flex:1 1 auto; min-width:0; max-width:100%; overflow-wrap:anywhere; word-break:break-word; }
+      .stages .st-meta{ flex:0 1 auto; min-width:0; max-width:100%; font-size:12px; color:var(--ink-soft); font-weight:700; white-space:normal; overflow-wrap:anywhere; word-break:break-word; }
+      /* 狭い画面ではメタ情報（内部段階・取得量・経過秒数）を名前の下の行に回し、
+         名前が潰れたり横にはみ出したりしないようにする */
+      @media (max-width:640px){
+        .stages li{ flex-wrap:wrap; }
+        .stages .st-meta{ flex:1 1 calc(100% - 29px); margin-left:29px; white-space:normal; }
+      }
+      .stages li[data-state="wait"]{ opacity:.55; }
+      .stages li[data-state="active"]{ color:var(--ink); }
+      .stages li[data-state="active"] .st-ic{ border-color:var(--accent); border-top-color:transparent; animation:stspin .8s linear infinite; }
+      .stages li[data-state="done"]{ color:var(--accent-deep); }
+      .stages li[data-state="done"] .st-ic{ border-color:var(--accent); background:var(--accent); color:#fff; animation:none; }
+      .stages li[data-state="error"]{ color:#C0392B; }
+      .stages li[data-state="error"] .st-ic{ border-color:#C0392B; background:#C0392B; color:#fff; animation:none; }
+      .stages li[data-state="error"] .st-meta{ color:#C0392B; }
+      @keyframes stspin{ to{ transform:rotate(360deg); } }
+      @media (prefers-reduced-motion: reduce){ .stages li[data-state="active"] .st-ic{ animation:none; } }
+      .retryBtn{ display:none; margin-top:8px; border:2px solid #C0392B; background:transparent; color:#C0392B; border-radius:12px; font:inherit; font-weight:800; font-size:13.5px; padding:9px 16px; cursor:pointer; min-height:42px; max-width:100%; min-width:0; white-space:normal; overflow-wrap:anywhere; }
+      .retryBtn.show{ display:inline-block; }
+      .narrTable{ margin-top:10px; border:1px dashed var(--line); border-radius:14px; padding:10px 12px; font-size:12.5px; line-height:1.8; color:var(--ink-soft); font-weight:700; display:none; max-width:100%; min-width:0; overflow-wrap:anywhere; }
+      .narrTable.show{ display:block; }
+      .narrTable .nt-head{ color:var(--ink); font-weight:800; overflow-wrap:anywhere; word-break:break-word; }
+      .narrTable .nt-line{ white-space:normal; overflow:visible; text-overflow:clip; overflow-wrap:anywhere; word-break:break-word; }
+      .warn{ color:#B3541E; font-weight:800; }
+      .credits{ margin-top:22px; border-top:1px solid var(--line); padding-top:12px; font-size:11.5px; line-height:1.75; color:var(--ink-soft); font-weight:500; max-width:100%; min-width:0; overflow-wrap:anywhere; word-break:break-word; }
+      .credits strong{ color:var(--ink); }
+      /* スマホ幅では余白を少し詰めて、本文の使える幅を確保する */
+      @media (max-width:560px){
+        .wrap{ padding:14px 10px 36px; }
+        .card{ padding:14px 12px; }
+        .seg button{ font-size:13.5px; padding:10px 6px; }
+        .primary{ font-size:15.5px; }
+        .subBtn{ font-size:14px; padding:11px 10px; }
+      }
+      /* ===== 2タブ（AMU TALK / AMU NOVEL） ===== */
+      .tabBarWrap{ width:100%; max-width:1180px; margin:0 auto; padding:16px 14px 0; min-width:0; }
+      @media (max-width:560px){ .tabBarWrap{ padding:12px 10px 0; } }
+      .tabBar{
+        display:flex; gap:8px; background:var(--card); border:1px solid var(--line);
+        border-radius:18px; box-shadow:var(--shadow); padding:8px; min-width:0; max-width:100%;
+      }
+      .tabBar button{
+        flex:1 1 0; min-width:0; max-width:100%; border:2px solid transparent; background:transparent; color:var(--ink-soft);
+        border-radius:12px; padding:10px 8px; font:inherit; font-weight:800; font-size:16px; letter-spacing:.04em;
+        cursor:pointer; min-height:52px; white-space:normal; overflow-wrap:anywhere; text-align:center;
+      }
+      .tabBar button small{ display:block; font-size:11.5px; font-weight:700; letter-spacing:0; margin-top:2px; overflow-wrap:anywhere; }
+      .tabBar button[aria-selected="true"]{ border-color:var(--accent); background:#E5F8F1; color:#0B6B4C; }
+      @media (prefers-color-scheme: dark){ .tabBar button[aria-selected="true"]{ background:#173B2E; color:#7CE7C4; } }
+      .talkWrap{ width:100%; max-width:760px; margin:0 auto; padding:16px 14px 40px; min-width:0; }
+      @media (max-width:560px){ .talkWrap{ padding:14px 10px 36px; } }
+      .talkWrap[hidden]{ display:none; }
+      .talkAudio{ width:100%; max-width:100%; min-width:0; margin-top:12px; display:none; }
+      .talkProg{ margin-top:12px; display:none; max-width:100%; min-width:0; }
+      .talkProg.show{ display:block; }
+    </style>
+  </head>
+  <body>
+    <div class="tabBarWrap">
+      <div class="tabBar" role="tablist" aria-label="アプリの切り替え">
+        <button type="button" id="tabBtnTalk" role="tab" aria-selected="false" aria-controls="talkPanel">AMU TALK<small>音声だけ作る</small></button>
+        <button type="button" id="tabBtnNovel" role="tab" aria-selected="true" aria-controls="novelPanel">AMU NOVEL<small>文字動画を作る</small></button>
+      </div>
+    </div>
+
+    <div class="talkWrap" id="talkPanel" role="tabpanel" aria-labelledby="tabBtnTalk" hidden>
+      <section class="card">
+        <p class="lead"><strong>AMU TALK</strong> ― テキストを入力して、声を作って、その場で聴いて、<strong>MP3で保存</strong>するだけのシンプルな読み上げです。合成はすべてこの端末の中で行い、入力した文章を外部に送信することはありません。</p>
+        <p class="note warn" style="margin-top:0">初回のみ、モデルと辞書のダウンロードが必要です（合計 約330MB）。Wi-Fi環境で読み込んでください。AMU NOVEL側で読み込み済みなら、こちらでも読み込み済みとして使えます（話者・スタイル設定も共通です）。</p>
+
+        <label class="flabel" for="talkText">テキスト</label>
+        <textarea id="talkText" rows="5">こんにちは。今日はいい天気ですね。</textarea>
+        <div class="rowbetween">
+          <span class="count" id="talkCount"></span>
+        </div>
+
+        <label class="flabel" for="talkSpeakerSel" style="margin-top:14px">話者</label>
+        <select id="talkSpeakerSel" class="speakerSel">
+          <option value="f2">女性（F2）</option>
+          <option value="yunomaru">男性（東部湯の丸）</option>
+          <option value="tokujiro">男性（さくら徳次郎）</option>
+          <option value="aoba">女性（横浜青葉）</option>
+        </select>
+
+        <div class="narrRow">
+          <label for="talkStyleSel" style="font-weight:800; font-size:14px">スタイル（感情）</label>
+          <select id="talkStyleSel">
+            <option value="0">Neutral（通常）</option>
+            <option value="1">Angry（怒り）</option>
+            <option value="2">Disgust（嫌悪）</option>
+            <option value="3">Fear（恐怖）</option>
+            <option value="4">Happy（喜び）</option>
+            <option value="5">Sad（悲しみ）</option>
+            <option value="6">Surprise（驚き）</option>
+          </select>
+        </div>
+        <label class="flabel" for="talkWeightRange">スタイルの強さ <span class="val" id="talkWeightVal">5</span></label>
+        <input class="durRange" type="range" id="talkWeightRange" min="0" max="50" step="1" value="5" />
+        <p class="note" id="talkStyleNote" style="display:none">この声はノーマル（Neutral）のみのモデルです。感情スタイルは選べません（雰囲気は文章の内容で寄ります）。</p>
+
+        <button class="subBtn" id="talkLoadBtn" type="button" style="margin-top:14px">TTSモデルを読み込む（約330MB）</button>
+        <div class="talkProg" id="talkProg">
+          <div class="bar"><div id="talkProgBar"></div></div>
+          <p class="loadProgLabel" id="talkProgLabel"></p>
+        </div>
+        <p class="estatus" id="talkLoadStatus"></p>
+
+        <button class="primary" id="talkGenBtn" type="button" disabled>音声を生成</button>
+        <p class="estatus" id="talkStatus"></p>
+        <audio class="talkAudio" id="talkAudio" controls playsinline></audio>
+        <button class="dl" id="talkMp3Btn" type="button">音声（MP3）をダウンロード</button>
+        <p class="estatus" id="talkSaveNote" aria-live="polite"></p>
+
+        <div class="credits">
+          <strong>クレジット・ライセンス</strong><br>
+          音声モデル：女性は、JVNVコーパスに基づく Style-BERT-VITS2 公式デフォルトモデル「jvnv-F2-jp」（litagin）をONNX化し int8 量子化した派生物 ― <strong>CC BY-SA 4.0</strong>（出典：JVNV Corpus / litagin）。男性「東部湯の丸」「さくら徳次郎」と女性「横浜青葉」は（出典：itoolsjp / Style-Bert-VITS2-Voice-Assets）をONNX化し int8 量子化した派生物で、その利用規約に従って使用しています。韻律推定：ku-nlp/deberta-v2-large-japanese-char-wwm（CC BY-SA 4.0）の量子化版。辞書：naist-jdic（BSD-3-Clause）。実行ライブラリ：@hdae/sbv2-web（MIT）、onnxruntime-web（MIT）。MP3変換：lamejs（LAMEのJavaScript移植、LGPL）。音声合成はすべてこの端末内で実行され、文章が外部に送信されることはありません。
+        </div>
+      </section>
+    </div>
+
+    <main class="wrap" id="novelPanel" role="tabpanel" aria-labelledby="tabBtnNovel">
+      <section class="card stage">
+        <p class="lead">文章を書くと、原稿用紙の上を<strong>カメラがゆっくり滑る、文学的な文字動画</strong>になります。縦書きのフレーズが静かに蓄積し、印象的な漢字は画面いっぱいに浮かび上がります。書き出しは1コマずつ描くので、端末の重さに左右されない<strong>きっちり60fpsのMP4</strong>です。下の「ナレーション」を使うと、<strong>行の表示と読み上げのタイミングが同期</strong>し、声入りのMP4を書き出せます。テーマは<strong>ダーク（ホラー）／ホワイト（感動系）</strong>から、雰囲気に合う<strong>ピアノBGM</strong>も選べます。</p>
+        <div class="canvasBox"><canvas id="stage" width="1280" height="720"></canvas></div>
+        <div class="transport">
+          <button class="tbtn" id="playBtn" aria-label="再生・一時停止">
+            <svg id="playIcon" viewBox="0 0 16 16"><rect x="2" y="2" width="4" height="12" rx="1"/><rect x="10" y="2" width="4" height="12" rx="1"/></svg>
+            <span id="playLabel">一時停止</span>
+          </button>
+          <button class="tbtn" id="restartBtn" aria-label="最初から">
+            <svg viewBox="0 0 16 16"><path d="M8 2a6 6 0 1 1-5.66 4H.7A7.5 7.5 0 1 0 8 .5V2z"/><path d="M8 .5 4.8 3.7h6.4L8 .5z" transform="translate(-1.6 1.4) scale(.82)"/></svg>
+            <span>最初から</span>
+          </button>
+          <input type="range" id="scrub" min="0" max="1000" value="0" aria-label="再生位置" />
+          <span class="meta" id="timeLabel">シーン 1/5</span>
+          <span class="fps" id="fpsLabel">-- fps</span>
+        </div>
+      </section>
+
+      <section class="card panel">
+        <label class="flabel" for="textInput">文章（1行 ＝ 1シーン）</label>
+        <textarea id="textInput" rows="6">二月三日
+雪はやまず、戸を叩く音だけが聞こえた。
+『もう寝なさい』と、母の声がした。
+足跡は、朝には消えていた。
+凍
+二月四日
+窓の外は白く、何も見えなかった。
+それでも、ここにいる。</textarea>
+        <div class="rowbetween">
+          <span class="count" id="sceneCount"></span>
+          <button class="ghost" id="sampleBtn" type="button">サンプルに戻す</button>
+        </div>
+        <p class="note" style="margin-top:2px">原稿カメラでは、「二月三日」のような日付の行は章扉に、漢字1〜2文字だけの行は画面いっぱいの巨大文字カットになります。</p>
+        <div class="wrapInfo" id="wrapInfo" aria-live="polite"></div>
+
+        <label class="flabel" for="durRange">1シーンの長さ <span class="val" id="durVal">3.2秒</span></label>
+        <input class="durRange" type="range" id="durRange" min="1.6" max="5" step="0.2" value="3.2" />
+
+        <label class="flabel" for="colRange">1列の文字数 <span class="val" id="colVal">12文字</span></label>
+        <input class="durRange" type="range" id="colRange" min="8" max="24" step="1" value="12" />
+        <p class="note" style="margin-top:2px">縦書き1列に入る文字数です（句読点も1文字として数えます）。これを超えた行は、左隣の列へ<strong>上揃え</strong>で折り返します。プレビューの原稿マスも1マス＝1文字で、この高さが上限と一致します。</p>
+
+        <label class="flabel">画面サイズ</label>
+        <div class="seg" id="sizeSeg">
+          <button type="button" data-size="wide" aria-pressed="true">横 16:9<small>1280×720</small></button>
+          <button type="button" data-size="tall" aria-pressed="false">縦 9:16<small>720×1280</small></button>
+          <button type="button" data-size="square" aria-pressed="false">正方形<small>960×960</small></button>
+        </div>
+
+        <label class="flabel">動画テーマ</label>
+        <div class="seg" id="themeSeg">
+          <button type="button" data-theme="dark" aria-pressed="true">ダーク（ホラー）<small>闇に浮かぶ原稿用紙</small></button>
+          <button type="button" data-theme="white" aria-pressed="false">ホワイト（感動系）<small>白い原稿用紙に濃い文字</small></button>
+        </div>
+        <p class="note" style="margin-top:2px">カメラワーク・縦書き組版・演出は共通で、色使いだけが変わります。プレビューとMP4書き出しの両方に反映されます。</p>
+
+        <div class="narrBox">
+          <label class="flabel">ナレーション（任意・端末内で合成）</label>
+          <p class="note" style="margin-top:0">文章の各行を Style-BERT-VITS2 で読み上げ、<strong>行が現れるタイミングと発声のタイミングを合わせます</strong>（各行の先頭に0.35秒の間を置き、その行の音声の長さがそのままシーンの長さになります）。合成はすべてこの端末の中で行い、入力した文章を外部に送信することはありません。</p>
+          <p class="note warn" style="margin-top:6px">初回のみ、モデルと辞書のダウンロードが必要です（音響モデル約76MB＋韻律モデル・辞書 約250MB、合計 約330MB）。Wi-Fi環境で読み込んでください。2回目以降はブラウザにキャッシュされます。</p>
+
+          <label class="flabel" for="speakerSel" style="margin-top:14px">話者</label>
+          <select id="speakerSel" class="speakerSel">
+            <option value="f2">女性（F2）</option>
+            <option value="yunomaru">男性（東部湯の丸）</option>
+            <option value="tokujiro">男性（さくら徳次郎）</option>
+            <option value="aoba">女性（横浜青葉）</option>
+          </select>
+
+          <div class="narrRow">
+            <label for="styleSel" style="font-weight:800; font-size:14px">スタイル（感情）</label>
+            <select id="styleSel">
+              <option value="0">Neutral（通常）</option>
+              <option value="1">Angry（怒り）</option>
+              <option value="2">Disgust（嫌悪）</option>
+              <option value="3">Fear（恐怖）</option>
+              <option value="4">Happy（喜び）</option>
+              <option value="5">Sad（悲しみ）</option>
+              <option value="6">Surprise（驚き）</option>
+            </select>
+          </div>
+          <label class="flabel" for="weightRange">スタイルの強さ <span class="val" id="weightVal">5</span></label>
+          <input class="durRange" type="range" id="weightRange" min="0" max="50" step="1" value="5" />
+          <p class="note" id="styleNote" style="display:none">この声はノーマル（Neutral）のみのモデルです。感情スタイルは選べません（雰囲気は文章の内容で寄ります）。</p>
+
+          <button class="subBtn" id="ttsLoadBtn" type="button" style="margin-top:14px">TTSモデルを読み込む（約330MB）</button>
+          <div class="loadProg" id="ttsProg">
+            <div class="bar"><div id="ttsProgBar"></div></div>
+            <p class="loadProgLabel" id="ttsProgLabel"></p>
+          </div>
+          <ul class="stages" id="ttsStages" style="display:none">
+            <li data-stage="acoustic-download" data-state="wait"><span class="st-ic">1</span><span class="st-name">音響モデルを取得</span><span class="st-meta">待機中</span></li>
+            <li data-stage="deberta" data-state="wait"><span class="st-ic">2</span><span class="st-name">DeBERTa（韻律推定）を取得</span><span class="st-meta">待機中</span></li>
+            <li data-stage="dictionary" data-state="wait"><span class="st-ic">3</span><span class="st-name">日本語辞書（naist-jdic）を取得</span><span class="st-meta">待機中</span></li>
+            <li data-stage="acoustic" data-state="wait"><span class="st-ic">4</span><span class="st-name">ONNXセッションを生成</span><span class="st-meta">待機中</span></li>
+          </ul>
+          <p class="estatus" id="ttsStatus"></p>
+          <button class="retryBtn" id="ttsRetryBtn" type="button">読み込みを再試行する</button>
+
+          <button class="subBtn" id="narrGenBtn" type="button" disabled>ナレーションを生成（行ごとに合成）</button>
+          <p class="estatus" id="narrStatus"></p>
+          <div class="narrTable" id="narrTable" aria-live="polite"></div>
+
+          <label class="flabel" style="margin-top:16px">再生・書き出しのモード</label>
+          <div class="seg" id="modeSeg">
+            <button type="button" data-mode="narr" aria-pressed="false" id="modeNarrBtn" disabled>ナレーション同期<small>行の音声の長さで進行</small></button>
+            <button type="button" data-mode="fixed" aria-pressed="true">従来（固定の長さ）<small>1シーンの長さで進行・無音</small></button>
+          </div>
+          <p class="note">ナレーション同期モードでは、プレビューも声つきで再生され、MP4書き出しにも音声トラックが入ります。</p>
+
+          <label class="flabel" style="margin-top:16px">BGM（ピアノ・動画用）</label>
+          <div class="narrRow">
+            <label for="bgmSel" style="font-weight:800; font-size:14px">曲</label>
+            <select id="bgmSel">
+              <option value="none">なし</option>
+              <option value="horror1">怖い話 1 ― 疎らな単音（短調）</option>
+              <option value="horror2">怖い話 2 ― 低い響きと遠い高音</option>
+              <option value="warm1">感動的な話 1 ― 温かいアルペジオ</option>
+              <option value="warm2">感動的な話 2 ― ゆったりした調べ</option>
+            </select>
+          </div>
+          <label class="flabel" for="bgmVolRange">BGMの音量 <span class="val" id="bgmVolVal">30</span></label>
+          <input class="durRange" type="range" id="bgmVolRange" min="0" max="100" step="1" value="30" />
+          <button class="subBtn" id="bgmPreviewBtn" type="button" style="margin-top:10px">BGMを試聴する（約14秒）</button>
+          <p class="note">BGMは、グランドピアノ音源「Salamander Grand Piano」のサンプルで演奏した、このアプリ専用のオリジナル曲です。プレビューでは再生に同期して流れ、MP4書き出しではナレーションの下に小さくミックスされます（動画の長さに合わせてループし、末尾はフェードアウト）。ナレーションのMP3保存にはBGMは入りません。</p>
+        </div>
+
+        <button class="primary" id="exportBtn" type="button">MP4を書き出す（60fps）</button>
+        <div class="exportArea" id="exportArea">
+          <div class="bar"><div id="exportBar"></div></div>
+          <p class="estatus" id="exportStatus"></p>
+          <button class="cancelBtn" id="cancelBtn" type="button">書き出しをやめる</button>
+          <video class="resultVideo" id="resultVideo" controls playsinline></video>
+          <button class="dl" id="downloadLink" type="button">動画をダウンロード</button>
+          <button class="dl" id="mp3Link" type="button" style="display:none">ナレーション音声（MP3）をダウンロード</button>
+          <p class="estatus" id="saveNote" aria-live="polite"></p>
+          <details class="diagBox" id="audioDiagBox" style="display:none">
+            <summary>音声の診断情報（うまくいかない時に見せてください）</summary>
+            <pre id="audioDiagText"></pre>
+          </details>
+        </div>
+        <p class="note" id="codecNote"></p>
+
+        <div class="credits">
+          <strong>クレジット・ライセンス</strong><br>
+          音声モデル：女性は、JVNVコーパスに基づく Style-BERT-VITS2 公式デフォルトモデル「jvnv-F2-jp」（litagin）をONNX化し int8 量子化した派生物 ― <strong>CC BY-SA 4.0</strong>（出典：JVNV Corpus / litagin）。男性「東部湯の丸」「さくら徳次郎」と女性「横浜青葉」は（出典：itoolsjp / Style-Bert-VITS2-Voice-Assets）をONNX化し int8 量子化した派生物で、その利用規約に従って使用しています。韻律推定：ku-nlp/deberta-v2-large-japanese-char-wwm（CC BY-SA 4.0）の量子化版。辞書：naist-jdic（BSD-3-Clause）。実行ライブラリ：@hdae/sbv2-web（MIT）、onnxruntime-web（MIT）。MP3変換：lamejs（LAMEのJavaScript移植、LGPL）。音声合成はすべてこの端末内で実行され、文章が外部に送信されることはありません。<br>
+          BGM音源：Salamander Grand Piano（Alexander Holm）― <strong>CC BY 3.0</strong>。この音源のサンプルで演奏したオリジナル曲を、アプリ内に同梱しています。
+        </div>
+      </section>
+    </main>
+
+    <script src="assets/mp4-muxer.js"></script>
+    <script src="assets/comlink.js"></script>
+    <script src="assets/lame.min.js"></script>
+    <script>
+    "use strict";
+    if (window.CanvasRenderingContext2D && !CanvasRenderingContext2D.prototype.roundRect){
+      CanvasRenderingContext2D.prototype.roundRect = function(x, y, w, h){
+        var r = Math.min(typeof arguments[4] === "number" ? arguments[4] : 0, w / 2, h / 2);
+        this.moveTo(x + r, y); this.lineTo(x + w - r, y); this.arcTo(x + w, y, x + w, y + r, r);
+        this.lineTo(x + w, y + h - r); this.arcTo(x + w, y + h, x + w - r, y + h, r);
+        this.lineTo(x + r, y + h); this.arcTo(x, y + h, x, y + h - r, r);
+        this.lineTo(x, y + r); this.arcTo(x, y, x + r, y, r); this.closePath();
+        return this;
+      };
+    }
+    /* ============ 状態 ============ */
+    var SAMPLE = "二月三日\n雪はやまず、戸を叩く音だけが聞こえた。\n『もう寝なさい』と、母の声がした。\n足跡は、朝には消えていた。\n凍\n二月四日\n窓の外は白く、何も見えなかった。\nそれでも、ここにいる。";
+    var state = {
+      sceneDur: 3.2,
+      colChars: 12,
+      colTouched: false,
+      size: "wide",
+      playing: true,
+      t: 0,
+      exportCancel: false,
+      mode: "fixed",   /* "fixed"=従来の固定長 / "narr"=ナレーション同期 */
+      theme: "dark",   /* "dark"=ダーク（ホラー） / "white"=ホワイト（感動系） */
+      bgm: "none",     /* BGMトラックID（BGM_TRACKS のキー / "none"=なし） */
+      bgmVol: 30,      /* BGM音量（0〜100・%） */
+      narr: null       /* {sampleRate, durations[], starts[], total, mix(Float32Array), buffer} */
+    };
+    /* ナレーション同期：各シーン先頭の無音パッド（発声開始＝シーン開始＋この秒数） */
+    var NARR_PAD = 0.35;
+
+    /* 現在のモードに応じたシーン長タイムラインを作る（プレビュー・書き出し共用） */
+    function currentTimeline(){
+      var scenes = getScenes();
+      var durs = [];
+      var useNarr = state.mode === "narr" && state.narr && state.narr.durations.length === scenes.length;
+      for (var i = 0; i < scenes.length; i++) durs.push(useNarr ? state.narr.durations[i] : state.sceneDur);
+      var starts = [], acc = 0;
+      for (var j = 0; j < durs.length; j++){ starts.push(acc); acc += durs[j]; }
+      return { durs: durs, starts: starts, total: acc };
+    }
+    var SIZES = { wide: [1280, 720], tall: [720, 1280], square: [960, 960] };
+
+    /* ============ 数式ユーティリティ ============ */
+    function clamp01(x){ return x < 0 ? 0 : x > 1 ? 1 : x; }
+    function smooth(x){ x = clamp01(x); return x * x * (3 - 2 * x); }
+    function mix(a, b, k){ return a + (b - a) * k; }
+    function css(c, a){ return "rgba(" + Math.round(c[0]) + "," + Math.round(c[1]) + "," + Math.round(c[2]) + "," + (a === undefined ? 1 : a) + ")"; }
+    function rnd(n){ var x = Math.sin(n * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); }
+
+    function getScenes(){
+      var raw = document.getElementById("textInput").value.split("\n");
+      var out = [];
+      for (var i = 0; i < raw.length; i++){ var s = raw[i].trim(); if (s) out.push(s); }
+      return out.length ? out : ["文章を入力してね"];
+    }
+
+    /* ============ 原稿カメラ（文学モード） ============ */
+    var MINCHO = '"Shippori Mincho","Hiragino Mincho ProN","YuMincho","Yu Mincho",serif';
+    function minchoStr(fs, w){ return (w || 600) + " " + fs + "px " + MINCHO; }
+    function classifyLine(s){
+      var chars = Array.from(s);
+      if (chars.length <= 7 && s.indexOf("月") >= 0 && s.indexOf("日") >= 0) return "chapter";
+      if (chars.length <= 2 && /[\u4E00-\u9FFF]/.test(s)) return "giant";
+      return "body";
+    }
+    /* 縦組みの約物ルールで1文字を描く（セルの中心 x, cy が基準）：
+       句読点はセルの右上、小書き文字は右上寄り、括弧・長音・三点リーダ等は90°回転 */
+    var SMALL_KANA = "ぁぃぅぇぉっゃゅょゎァィゥェォッャュョヮヵヶ";
+    var ROT_CHARS = "ー―…〜：；";
+    var OPEN_BR = "「『（【〈《〔｛";
+    var CLOSE_BR = "」』）】〉》〕｝";
+    function drawVChar(ctx, ch, x, cy, fs){
+      var dx = 0, dy = 0, rot = 0;
+      if (ch === "、" || ch === "，" || ch === "。" || ch === "．"){
+        dx = fs * 0.36; dy = -fs * 0.36;
+      } else if (SMALL_KANA.indexOf(ch) >= 0){
+        dx = fs * 0.16; dy = -fs * 0.16;
+      } else if (OPEN_BR.indexOf(ch) >= 0){
+        rot = Math.PI / 2; dx = fs * 0.05; dy = -fs * 0.10;
+      } else if (CLOSE_BR.indexOf(ch) >= 0){
+        rot = Math.PI / 2; dx = fs * 0.05; dy = fs * 0.10;
+      } else if (ROT_CHARS.indexOf(ch) >= 0){
+        rot = Math.PI / 2;
+      }
+      ctx.save();
+      ctx.translate(x + dx, cy + dy);
+      if (rot) ctx.rotate(rot);
+      ctx.fillText(ch, 0, 0);
+      ctx.restore();
+    }
+    /* 縦書きで1文字ずつ描く（x=列の中心, yTop=先頭文字の中心） */
+    function drawVertical(ctx, text, x, yTop, fs, pitch, alphaFn){
+      var chars = Array.from(text);
+      ctx.font = minchoStr(fs);
+      ctx.textAlign = "center"; ctx.textBaseline = "middle";
+      for (var i = 0; i < chars.length; i++){
+        var a = alphaFn ? alphaFn(i, chars.length) : 1;
+        if (a <= 0.003) continue;
+        ctx.globalAlpha = a;
+        drawVChar(ctx, chars[i], x, yTop + i * pitch, fs);
+      }
+      ctx.globalAlpha = 1;
+    }
+    /* 原稿平面のレイアウト：本文フレーズを右→左の列として並べる */
+    function buildPlane(scenes){
+      var FS = 100, charPitch = FS * 1.34, colPitch = FS * 2.35, maxCol = state.colChars;
+      var cols = [];       /* {sceneIdx, chars:[{ch, order}], x} */
+      var bodyInfo = {};   /* sceneIdx -> {firstCol, colCount, centerX, total} */
+      var colIdx = 0;
+      for (var si = 0; si < scenes.length; si++){
+        if (classifyLine(scenes[si]) !== "body") continue;
+        var chars = Array.from(scenes[si]);
+        var startCol = colIdx;
+        for (var c0 = 0; c0 < chars.length; c0 += maxCol){
+          var chunk = [];
+          for (var k = c0; k < Math.min(c0 + maxCol, chars.length); k++) chunk.push({ ch: chars[k], order: k });
+          cols.push({ sceneIdx: si, chars: chunk, x: -colIdx * colPitch });
+          colIdx++;
+        }
+        if (colIdx === startCol){ cols.push({ sceneIdx: si, chars: [], x: -colIdx * colPitch }); colIdx++; }
+        var firstX = -startCol * colPitch, lastX = -(colIdx - 1) * colPitch;
+        bodyInfo[si] = { firstCol: startCol, colCount: colIdx - startCol, centerX: (firstX + lastX) / 2, total: chars.length };
+      }
+      return { FS: FS, charPitch: charPitch, colPitch: colPitch, cols: cols, bodyInfo: bodyInfo, maxCol: maxCol, topY: -(maxCol - 1) * charPitch / 2 };
+    }
+
+    function drawGenkou(ctx, W, H, t){
+      var scenes = getScenes();
+      var tl = currentTimeline();
+      var total = tl.total;
+      var tt = total > 0 ? (t % total) : 0;
+      var si = 0;
+      while (si < scenes.length - 1 && tt >= tl.starts[si] + tl.durs[si]) si++;
+      var local = tt - tl.starts[si];
+      var sceneDur = tl.durs[si];
+      var kind = classifyLine(scenes[si]);
+      var frame = Math.floor(t * 60);
+      /* テーマ：dark=闇に浮かぶ原稿用紙 / white=白い原稿用紙に濃い文字。
+         演出・カメラ・組版は共通で、ここで決まる色だけが切り替わる */
+      var isWhite = state.theme === "white";
+      var ink = isWhite ? [36, 38, 48] : [228, 226, 218];
+      function uiA(a){ return isWhite ? "rgba(43,45,56," + a + ")" : "rgba(235,233,226," + a + ")"; }
+      var spotCol = isWhite ? "255,196,110" : "196,208,228";
+
+      /* 背景：ダークは闇のグラデーション、ホワイトは温かみのある白紙 */
+      var bg = ctx.createLinearGradient(0, 0, W * 0.25, H);
+      if (isWhite){
+        bg.addColorStop(0, "#FFFDF6"); bg.addColorStop(0.55, "#FBF5E9"); bg.addColorStop(1, "#F3ECDB");
+      } else {
+        bg.addColorStop(0, "#0a0e16"); bg.addColorStop(0.55, "#060910"); bg.addColorStop(1, "#03050a");
+      }
+      ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
+
+      var plane = buildPlane(scenes);
+      /* 本文シーンの通し番号（カメラの移動用） */
+      var bodyOrder = [], bodyPos = {};
+      for (var q = 0; q < scenes.length; q++){
+        if (classifyLine(scenes[q]) === "body"){ bodyPos[q] = bodyOrder.length; bodyOrder.push(q); }
+      }
+
+      if (kind === "body" || bodyOrder.length){
+        /* ===== カメラ：原稿平面の上を滑る ===== */
+        var bi = kind === "body" ? bodyPos[si] : -1;
+        if (bi < 0){ /* カット中は直前の本文位置で静止。直前が無ければ平面はまだ空 */
+          for (var q2 = si - 1; q2 >= 0; q2--){ if (bodyPos[q2] !== undefined){ bi = bodyPos[q2]; break; } }
+        }
+        var baseScale = (Math.min(W, H) * 0.055) / plane.FS;
+        var viewW = W / baseScale;
+        function camTarget(b){
+          var sIdx = bodyOrder[Math.max(0, Math.min(bodyOrder.length - 1, b))];
+          var info = plane.bodyInfo[sIdx];
+          if (!info) return 0;
+          return info.centerX - viewW * 0.16; /* 新しい列がやや右に来る */
+        }
+        var moveP = smooth(Math.min(1, local / (sceneDur * 0.72)));
+        var camFrom = camTarget(bi - 1), camTo = camTarget(bi);
+        if (si === bodyOrder[0]) camFrom = camTo;
+        var camX = mix(camFrom, camTo, kind === "body" ? moveP : 1);
+        camX += Math.sin(t * 0.21) * 16 - (kind === "body" ? local * 3.2 : 0); /* 微かなドリフト＋読み進む滑り */
+        var camY = Math.sin(t * 0.16) * 13;
+        var zoom = baseScale * (1 + 0.055 * smooth(local / sceneDur) + 0.008 * Math.sin(t * 0.3));
+
+        /* スポットライト（カメラ焦点のあたり） */
+        var spot = ctx.createRadialGradient(W * 0.58, H * 0.46, 0, W * 0.58, H * 0.46, Math.min(W, H) * 0.85);
+        spot.addColorStop(0, "rgba(" + spotCol + "," + (isWhite ? 0.20 : 0.13) + ")"); spot.addColorStop(1, "rgba(" + spotCol + ",0)");
+        ctx.fillStyle = spot; ctx.fillRect(0, 0, W, H);
+
+        ctx.save();
+        ctx.translate(W / 2, H / 2); ctx.scale(zoom, zoom); ctx.translate(-camX, -camY);
+
+        /* 原稿用紙のマス目（1マス＝1文字セル。横線は文字の行位置に一致） */
+        var cell = plane.charPitch;
+        var topEdge = plane.topY - cell / 2;
+        var x0 = Math.floor((camX - viewW / 2 - cell) / cell) * cell + cell / 2, x1 = camX + viewW / 2 + cell;
+        var y0 = -Math.ceil(H / zoom / 2 + cell), y1 = -y0;
+        ctx.strokeStyle = isWhite ? "rgba(160,74,48,0.13)" : "rgba(170,190,220,0.055)"; ctx.lineWidth = 1.4 / zoom * 1.4;
+        ctx.beginPath();
+        for (var gx = x0; gx <= x1; gx += cell){ ctx.moveTo(gx, y0); ctx.lineTo(gx, y1); }
+        for (var gy = topEdge + Math.floor((y0 - topEdge) / cell) * cell; gy <= y1; gy += cell){ ctx.moveTo(x0 - cell, gy); ctx.lineTo(x1, gy); }
+        ctx.stroke();
+        /* 各列の「1列ぶん」の枠：高さ＝上限文字数ぶんのセルで、列の上限が目で分かる */
+        ctx.strokeStyle = isWhite ? "rgba(160,74,48,0.20)" : "rgba(190,205,230,0.10)"; ctx.lineWidth = 1.2 / zoom * 1.4;
+        for (var cf = 0; cf < plane.cols.length; cf++){
+          ctx.strokeRect(plane.cols[cf].x - plane.FS * 0.62, topEdge, plane.FS * 1.24, plane.maxCol * cell);
+        }
+
+        /* 蓄積する本文 */
+        ctx.textAlign = "center"; ctx.textBaseline = "middle";
+        ctx.font = minchoStr(plane.FS);
+        var cutDim = kind === "body" ? 1 : 0.16; /* カットシーン中は平面を落とす */
+        for (var ci2 = 0; ci2 < plane.cols.length; ci2++){
+          if (bi < 0) break;
+          var col = plane.cols[ci2];
+          var rel = bodyPos[col.sceneIdx] - (kind === "body" ? bodyPos[si] : bi);
+          if (col.sceneIdx === si && kind !== "body") rel = 99;
+          if (bodyPos[col.sceneIdx] > bi && kind === "body") continue;
+          if (kind !== "body" && bodyPos[col.sceneIdx] > bi) continue;
+          var baseA = col.sceneIdx === si && kind === "body" ? 1 : 0.46;
+          for (var cj = 0; cj < col.chars.length; cj++){
+            var cell2 = col.chars[cj];
+            var a = baseA;
+            var sc = 1, glow = 0, yOff = 0;
+            if (col.sceneIdx === si && kind === "body"){
+              var frac = cell2.order / Math.max(1, plane.bodyInfo[si].total);
+              var start, span;
+              if (state.mode === "narr" && state.narr){
+                /* 発声に合わせて文字が出る：パッド明けから発声の進みに沿って出現 */
+                start = NARR_PAD + frac * Math.max(0.1, sceneDur - NARR_PAD) * 0.82;
+                span = 0.55;
+              } else {
+                start = 0.18 + frac * sceneDur * 0.5;
+                span = 0.85;
+              }
+              var p = clamp01((local - start) / span);
+              a = p; sc = 1 + 0.22 * (1 - p); glow = (1 - p) * 26; yOff = -(1 - p) * 18;
+              if (p <= 0) continue;
+            }
+            ctx.save();
+            ctx.translate(col.x, plane.topY + cj * plane.charPitch + yOff);
+            ctx.scale(sc, sc);
+            ctx.globalAlpha = a * cutDim;
+            if (glow > 0.5){ ctx.shadowColor = isWhite ? "rgba(150,100,40,0.45)" : "rgba(220,228,240,0.85)"; ctx.shadowBlur = glow; }
+            ctx.fillStyle = css(ink);
+            drawVChar(ctx, cell2.ch, 0, 0, plane.FS);
+            ctx.restore();
+          }
+        }
+        ctx.restore();
+        ctx.globalAlpha = 1; ctx.shadowBlur = 0;
+      }
+
+      /* ===== 章扉（日付） ===== */
+      if (kind === "chapter"){
+        var envC = Math.min(smooth(local / 1.15), smooth((sceneDur - local) / 0.9));
+        var fsC = Math.min(W, H) * 0.115;
+        var pitchC = fsC * 1.32;
+        var charsC = Array.from(scenes[si]);
+        ctx.save();
+        ctx.translate(W / 2, H / 2); ctx.scale(1 + 0.02 * Math.sin(t * 0.25), 1 + 0.02 * Math.sin(t * 0.25));
+        ctx.translate(-W / 2, -H / 2);
+        var spotC = ctx.createRadialGradient(W / 2, H / 2, 0, W / 2, H / 2, Math.min(W, H) * 0.62);
+        spotC.addColorStop(0, "rgba(" + spotCol + "," + (isWhite ? 0.22 : 0.16) + ")"); spotC.addColorStop(1, "rgba(" + spotCol + ",0)");
+        ctx.fillStyle = spotC; ctx.fillRect(0, 0, W, H);
+        ctx.strokeStyle = css(ink, 0.35 * envC); ctx.lineWidth = 1;
+        var lx = fsC * 1.15, ly0 = H / 2 - (charsC.length - 1) * pitchC / 2 - fsC * 0.9, ly1 = H / 2 + (charsC.length - 1) * pitchC / 2 + fsC * 0.9;
+        ctx.beginPath();
+        ctx.moveTo(W / 2 - lx, ly0); ctx.lineTo(W / 2 - lx, ly1);
+        ctx.moveTo(W / 2 + lx, ly0); ctx.lineTo(W / 2 + lx, ly1);
+        ctx.stroke();
+        ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillStyle = css(ink);
+        drawVertical(ctx, scenes[si], W / 2, H / 2 - (charsC.length - 1) * pitchC / 2, fsC, pitchC, function(i){
+          return envC * clamp01((local - 0.35 - i * 0.22) / 0.9);
+        });
+        ctx.restore();
+      }
+
+      /* ===== 巨大漢字カット ===== */
+      if (kind === "giant"){
+        var gCount = 0; for (var gq = 0; gq <= si; gq++) if (classifyLine(scenes[gq]) === "giant") gCount++;
+        /* 巨大文字カットは地と文字を反転させて交互に出す。ダークテーマは
+           1回目=闇地に明文字、ホワイトテーマは 1回目=白地に濃文字 から始める */
+        var light = isWhite ? (gCount % 2 === 1) : (gCount % 2 === 0);
+        var envG = Math.min(smooth(local / 1.0), smooth((sceneDur - local) / 0.85));
+        if (light){
+          var bgL = ctx.createLinearGradient(0, 0, 0, H);
+          bgL.addColorStop(0, "rgba(233,231,224," + envG + ")"); bgL.addColorStop(1, "rgba(206,204,197," + envG + ")");
+          ctx.fillStyle = bgL; ctx.fillRect(0, 0, W, H);
+        } else if (isWhite){
+          var bgD = ctx.createLinearGradient(0, 0, 0, H);
+          bgD.addColorStop(0, "rgba(16,19,28," + envG + ")"); bgD.addColorStop(1, "rgba(6,8,14," + envG + ")");
+          ctx.fillStyle = bgD; ctx.fillRect(0, 0, W, H);
+        }
+        var gInk = light ? [22, 24, 30] : (isWhite ? [233, 231, 224] : ink);
+        var charsG = Array.from(scenes[si]);
+        var fsG = charsG.length <= 1 ? Math.min(W, H) * 0.60 : Math.min(W, H) * 0.42;
+        var pitchG = fsG * 1.08;
+        ctx.save();
+        ctx.globalAlpha = envG;
+        var gz = 1.06 - 0.06 * smooth(local / sceneDur);
+        ctx.translate(W / 2, H / 2); ctx.scale(gz, gz); ctx.translate(-W / 2, -H / 2);
+        if (!light){
+          var spotG = ctx.createRadialGradient(W / 2, H / 2, 0, W / 2, H / 2, Math.min(W, H) * 0.66);
+          spotG.addColorStop(0, "rgba(205,216,235,0.20)"); spotG.addColorStop(1, "rgba(205,216,235,0)");
+          ctx.fillStyle = spotG; ctx.fillRect(0, 0, W, H);
+        }
+        /* 枠と×印（少し遅れて描き込まれる） */
+        var markP = clamp01((local - 0.55) / 0.9);
+        var bw = fsG * 1.34, bh = (charsG.length - 1) * pitchG + fsG * 1.34;
+        ctx.strokeStyle = css(gInk, 0.55); ctx.lineWidth = Math.max(1.2, fsG * 0.012);
+        ctx.strokeRect(W / 2 - bw / 2, H / 2 - bh / 2, bw, bh);
+        if (markP > 0){
+          var mx = W / 2 - bw / 2, my = H / 2 - bh / 2, mw = bw * 0.42, mh = bh * 0.42;
+          ctx.strokeStyle = css(gInk, 0.8); ctx.lineWidth = Math.max(1.4, fsG * 0.016);
+          ctx.beginPath();
+          ctx.moveTo(mx, my); ctx.lineTo(mx + mw * markP, my + mh * markP);
+          ctx.moveTo(mx + mw, my); ctx.lineTo(mx + mw * (1 - markP), my + mh * markP);
+          ctx.stroke();
+        }
+        ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillStyle = css(gInk);
+        ctx.shadowColor = light ? "rgba(20,22,28,0.25)" : "rgba(215,224,240,0.5)";
+        ctx.shadowBlur = (1 - smooth(local / 1.1)) * 34;
+        drawVertical(ctx, scenes[si], W / 2, H / 2 - (charsG.length - 1) * pitchG / 2, fsG, pitchG, function(){ return 1; });
+        ctx.shadowBlur = 0;
+        /* 注釈：隣の本文フレーズを小さく縦書きで添える */
+        var note = null;
+        for (var nq = si - 1; nq >= 0; nq--) if (classifyLine(scenes[nq]) === "body"){ note = scenes[nq]; break; }
+        if (!note) for (var nq2 = si + 1; nq2 < scenes.length; nq2++) if (classifyLine(scenes[nq2]) === "body"){ note = scenes[nq2]; break; }
+        if (note){
+          ctx.fillStyle = css(gInk, 0.62);
+          var fsN = Math.min(W, H) * 0.030;
+          drawVertical(ctx, note, W / 2 + bw / 2 + fsN * 2.1, H / 2 - (Array.from(note).length - 1) * fsN * 1.3 / 2, fsN, fsN * 1.3, function(){ return 1; });
+        }
+        ctx.restore();
+        ctx.globalAlpha = 1;
+      }
+
+      /* ===== 質感の小物 ===== */
+      /* 吹雪の streaks */
+      ctx.lineCap = "round";
+      for (var b = 0; b < 42; b++){
+        var spd = 130 + rnd(b * 3) * 320;
+        var bx2 = W + 160 - ((rnd(b * 7 + 1) * (W + 320) + t * spd) % (W + 320));
+        var by2 = rnd(b * 11 + 2) * H + Math.sin(t * 0.6 + b) * 8;
+        var len = 26 + rnd(b * 13) * 74;
+        ctx.strokeStyle = "rgba(" + (isWhite ? "150,128,86" : "225,232,244") + "," + (0.05 + rnd(b * 17) * 0.10) + ")";
+        ctx.lineWidth = 1 + rnd(b * 19) * 1.6;
+        ctx.beginPath(); ctx.moveTo(bx2, by2); ctx.lineTo(bx2 - len, by2 + len * 0.06); ctx.stroke();
+      }
+      /* 左端の音声メーター（ナレーション同期時は実際の波形の振幅で駆動） */
+      var narrAmp = -1;
+      if (state.mode === "narr" && state.narr){
+        var mixArr = state.narr.mix, cIdx = Math.floor(tt * state.narr.sampleRate), aAcc = 0, aCnt = 0;
+        for (var wI = -240; wI < 240; wI += 24){ var ix = cIdx + wI; if (ix >= 0 && ix < mixArr.length){ aAcc += Math.abs(mixArr[ix]); aCnt++; } }
+        narrAmp = aCnt ? Math.min(1, (aAcc / aCnt) * 3.4) : 0;
+      }
+      var mN = 26, mCx = 20, mCy = H / 2;
+      for (var m = 0; m < mN; m++){
+        var amp = narrAmp >= 0
+          ? narrAmp * (0.45 + 0.55 * Math.sin(Math.PI * m / (mN - 1))) * (0.75 + 0.25 * Math.sin(t * 8 + m * 2.1))
+          : Math.abs(Math.sin(t * 1.35 + m * 0.62) * Math.sin(t * 0.47 + m * 1.7));
+        var mw2 = 3 + amp * 15 * (0.4 + 0.6 * Math.sin(Math.PI * m / (mN - 1)));
+        ctx.fillStyle = uiA(0.16 + amp * 0.30);
+        ctx.fillRect(mCx, mCy + (m - (mN - 1) / 2) * 9 - 1, mw2, 2);
+      }
+      /* レジストレーションマーク（十字） */
+      ctx.strokeStyle = uiA(0.4); ctx.lineWidth = 1;
+      var crosses = [[44, 44], [W - 44, 44], [44, H - 44], [W - 44, H - 44], [W * 0.3, H * 0.24]];
+      for (var cr = 0; cr < crosses.length; cr++){
+        var cxp = crosses[cr][0], cyp = crosses[cr][1];
+        ctx.beginPath();
+        ctx.moveTo(cxp - 7, cyp); ctx.lineTo(cxp + 7, cyp);
+        ctx.moveTo(cxp, cyp - 7); ctx.lineTo(cxp, cyp + 7);
+        ctx.stroke();
+      }
+      /* グリッチ：切り替わり直後の一瞬だけ、帯をずらして白黒フラッシュ */
+      var glitch = (local < 0.14 && si > 0) || (kind === "giant" && local > 0.5 && local < 0.60);
+      if (glitch){
+        var cv = ctx.canvas;
+        for (var s2 = 0; s2 < 4; s2++){
+          var sy = rnd(frame * 4 + s2) * H * 0.9, sh = 6 + rnd(frame + s2 * 7) * 26;
+          var off = (rnd(frame * 9 + s2) - 0.5) * 46;
+          try { ctx.drawImage(cv, 0, sy, W, sh, off, sy, W, sh); } catch (e) { /* 自己描画不可の環境では省略 */ }
+        }
+        ctx.fillStyle = "rgba(" + (isWhite ? "40,42,52" : "235,238,244") + "," + (0.05 + rnd(frame) * 0.06) + ")";
+        ctx.fillRect(0, rnd(frame * 3) * H, W, 2 + rnd(frame * 5) * 10);
+      }
+      /* フィルムグレイン（フレーム番号で決まる決定的ノイズ） */
+      for (var gr = 0; gr < 150; gr++){
+        var gxx = rnd(gr * 3 + frame * 131) * W, gyy = rnd(gr * 7 + frame * 57) * H;
+        ctx.fillStyle = rnd(gr + frame) > 0.5 ? (isWhite ? "rgba(120,95,50,0.05)" : "rgba(255,255,255,0.05)") : (isWhite ? "rgba(255,255,255,0.35)" : "rgba(0,0,0,0.16)");
+        ctx.fillRect(gxx, gyy, 1.4, 1.4);
+      }
+      /* ビネット */
+      var vg = ctx.createRadialGradient(W / 2, H / 2, Math.min(W, H) * 0.42, W / 2, H / 2, Math.max(W, H) * 0.78);
+      vg.addColorStop(0, "rgba(0,0,0,0)"); vg.addColorStop(1, isWhite ? "rgba(112,90,55,0.22)" : "rgba(0,0,0,0.55)");
+      ctx.fillStyle = vg; ctx.fillRect(0, 0, W, H);
+
+      /* シーンドット＋進み具合バー（暗い画面用に明色） */
+      var dotY = H - Math.max(26, H * 0.045);
+      var dotGap = Math.max(20, W * 0.02);
+      var dotsW = (scenes.length - 1) * dotGap;
+      for (var di = 0; di < scenes.length; di++){
+        var dxx = W / 2 - dotsW / 2 + di * dotGap;
+        ctx.beginPath();
+        ctx.arc(dxx, dotY, di === si ? 6 : 3.6, 0, Math.PI * 2);
+        ctx.fillStyle = di === si ? uiA(0.95) : uiA(0.28);
+        ctx.fill();
+      }
+      var prog = total > 0 ? tt / total : 0;
+      ctx.fillStyle = uiA(0.14); ctx.fillRect(0, H - 6, W, 6);
+      ctx.fillStyle = uiA(0.75); ctx.fillRect(0, H - 6, W * prog, 6);
+
+      return { scene: si, count: scenes.length, total: total, tt: tt };
+    }
+
+    /* ============ 描画（プレビューと書き出しで完全共用） ============ */
+    function drawFrame(ctx, W, H, t){
+      return drawGenkou(ctx, W, H, t);
+    }
+    </script>
+    <script>
+    "use strict";
+    /* ============ プレビュー再生 ============ */
+    var stage = document.getElementById("stage");
+    var sctx = stage.getContext("2d");
+    var scrub = document.getElementById("scrub");
+    var timeLabel = document.getElementById("timeLabel");
+    var fpsLabel = document.getElementById("fpsLabel");
+    var playBtn = document.getElementById("playBtn");
+    var playLabel = document.getElementById("playLabel");
+    var playIcon = document.getElementById("playIcon");
+    var lastNow = null, fpsEma = 60, scrubbing = false;
+
+    function totalDur(){ return currentTimeline().total; }
+
+    function frame(now){
+      requestAnimationFrame(frame);
+      if (lastNow === null) lastNow = now;
+      var dt = Math.min(0.1, (now - lastNow) / 1000);
+      lastNow = now;
+      if (dt > 0) fpsEma = fpsEma * 0.92 + (1 / Math.max(dt, 1e-4)) * 0.08;
+      if (state.playing && !scrubbing){
+        /* ナレーション同期中は音声クロックを映像の時計にする */
+        if (narrClockActive()){
+          var nt = aAnchor.offset + (actx.currentTime - aAnchor.ctxTime);
+          if (nt >= totalDur()){ state.t = 0; startNarrAudio(0); }
+          else state.t = nt;
+        } else {
+          state.t += dt;
+        }
+      }
+      var info = drawFrame(sctx, stage.width, stage.height, state.t);
+      if (!scrubbing && info.total > 0) scrub.value = Math.round(info.tt / info.total * 1000);
+      timeLabel.textContent = "シーン " + (info.scene + 1) + "/" + info.count;
+      fpsLabel.textContent = Math.round(Math.min(fpsEma, 240)) + " fps";
+    }
+    requestAnimationFrame(frame);
+
+    scrub.addEventListener("input", function(){
+      scrubbing = true;
+      stopNarrAudio();
+      state.t = (scrub.value / 1000) * totalDur();
+    });
+    scrub.addEventListener("change", function(){
+      scrubbing = false;
+      if (state.playing && state.mode === "narr") startNarrAudio(state.t % Math.max(0.01, totalDur()));
+      else if (state.playing) startBgmAudio(state.t % Math.max(0.01, totalDur()));
+    });
+
+    function setPlayUI(){
+      playLabel.textContent = state.playing ? "一時停止" : "再生";
+      playIcon.innerHTML = state.playing
+        ? '<rect x="2" y="2" width="4" height="12" rx="1"/><rect x="10" y="2" width="4" height="12" rx="1"/>'
+        : '<path d="M4 2.5v11c0 .8.9 1.3 1.6.9l8-5.5c.6-.4.6-1.4 0-1.8l-8-5.5C4.9 1.2 4 1.7 4 2.5z"/>';
+    }
+    playBtn.addEventListener("click", function(){
+      state.playing = !state.playing;
+      if (state.mode === "narr"){
+        if (state.playing) startNarrAudio(state.t % Math.max(0.01, totalDur()));
+        else stopNarrAudio();
+      } else {
+        if (state.playing) startBgmAudio(state.t % Math.max(0.01, totalDur()));
+        else stopBgmAudio();
+      }
+      setPlayUI();
+    });
+    document.getElementById("restartBtn").addEventListener("click", function(){
+      state.t = 0;
+      if (state.playing && state.mode === "narr") startNarrAudio(0);
+      else if (state.playing) startBgmAudio(0);
+    });
+
+    /* ============ 入力まわり ============ */
+    var textInput = document.getElementById("textInput");
+    var sceneCount = document.getElementById("sceneCount");
+    var wrapInfo = document.getElementById("wrapInfo");
+    function escapeHtml(str){
+      return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+    function refreshCount(){
+      var scenes = getScenes();
+      var tl = currentTimeline();
+      sceneCount.textContent = scenes.length + "シーン・合計 約" + tl.total.toFixed(1) + "秒" +
+        (state.mode === "narr" && state.narr ? "（ナレーション同期）" : "");
+      var maxCols = 0, html = "";
+      for (var i = 0; i < scenes.length; i++){
+        var str = scenes[i], len = Array.from(str).length, kind = classifyLine(str), label;
+        if (kind === "chapter") label = len + "文字・章扉カット";
+        else if (kind === "giant") label = len + "文字・巨大文字カット";
+        else {
+          var cols = Math.max(1, Math.ceil(len / state.colChars));
+          if (cols > maxCols) maxCols = cols;
+          label = len + "文字 → " + cols + "列" + (cols > 1 ? "に折り返し" : "");
+        }
+        html += '<div class="wi-line">' + (i + 1) + ". " + escapeHtml(str) + " ― " + label + "</div>";
+      }
+      wrapInfo.innerHTML = '<div class="wi-head">1列 ＝ ' + state.colChars + '文字まで（句読点も1文字）／ この文章は最大 ' + maxCols + '列</div>' + html;
+      wrapInfo.classList.add("show");
+    }
+    textInput.addEventListener("input", function(){ invalidateNarr("文章が変わったため"); refreshCount(); });
+    document.getElementById("sampleBtn").addEventListener("click", function(){
+      textInput.value = SAMPLE; state.t = 0; invalidateNarr("文章が変わったため"); refreshCount();
+    });
+
+    function segWire(id, attr, apply){
+      var box = document.getElementById(id);
+      box.addEventListener("click", function(ev){
+        var btn = ev.target.closest("button"); if (!btn) return;
+        var btns = box.querySelectorAll("button");
+        for (var i = 0; i < btns.length; i++) btns[i].setAttribute("aria-pressed", "false");
+        btn.setAttribute("aria-pressed", "true");
+        apply(btn.getAttribute(attr));
+      });
+    }
+    var COL_DEFAULTS = { wide: 12, square: 12, tall: 18 };
+    segWire("sizeSeg", "data-size", function(v){
+      state.size = v;
+      var wh = SIZES[v];
+      stage.width = wh[0]; stage.height = wh[1];
+      if (!state.colTouched) setColChars(COL_DEFAULTS[v] || 12);
+    });
+    /* 動画テーマ（ダーク／ホワイト）：描画側が state.theme を見て色を切り替える。
+       プレビューも書き出しも同じ drawFrame を使うため、両方に自動で反映される */
+    segWire("themeSeg", "data-theme", function(v){
+      state.theme = v === "white" ? "white" : "dark";
+    });
+
+    var durRange = document.getElementById("durRange");
+    var durVal = document.getElementById("durVal");
+    durRange.addEventListener("input", function(){
+      state.sceneDur = parseFloat(durRange.value);
+      durVal.textContent = state.sceneDur.toFixed(1) + "秒";
+      refreshCount();
+    });
+
+    var colRange = document.getElementById("colRange");
+    var colVal = document.getElementById("colVal");
+    function setColChars(n){
+      state.colChars = Math.max(8, Math.min(24, Math.round(n) || 12));
+      colRange.value = state.colChars;
+      colVal.textContent = state.colChars + "文字";
+      refreshCount();
+    }
+    colRange.addEventListener("input", function(){
+      state.colTouched = true;
+      setColChars(parseInt(colRange.value, 10));
+    });
+    refreshCount();
+
+    /* ============ ナレーション（Style-BERT-VITS2・端末内合成） ============ */
+    /* 合成エンジンは PoC と同一のワーカー（@hdae/sbv2-web + onnxruntime-web）を使う。
+       モデルは Hugging Face から取得し、テキストは外部に送信しない。 */
+    /* 音響モデルは話者ごとに「正しいバイト数と SHA-256」を持ち、取得時に必ず照合する。
+       JVNV の F1／F2 は同一アーキテクチャで int8 化するとサイズが数バイトしか
+       違わない（F1: 75,657,068 / F2: 75,657,062）ため、URL やサイズ感だけでは
+       取り違えに気づけない。以前は音響モデルだけ検証なしで取得していた
+       （DeBERTa には検証がある）ので、端末のキャッシュに別モデルのバイト列が
+       残っていても無言で使われてしまう余地があった。照合に失敗したキャッシュは
+       pageDownload 側が破棄して取り直す。
+       ハッシュは配信実ファイルの実測値（F2 はモデル内蔵マニフェストの
+       記録名「jvnv-F2-jp」・モデル UUID も F1 と別物であることを確認済み）。
+       東部湯の丸（yunomaru）は別アーキテクチャで 75,648,461 bytes とサイズも
+       異なるが、照合の仕組みは同じものを使う。
+       neutralOnly の話者は感情スタイルを持たない（Neutral のみ）ため、
+       スタイル選択を無効化し、合成は常に Neutral で行う。また、旧・男性（M2）
+       で行っていたピッチ0.75加工（SoundTouch）は廃止し、男女とも加工なしで
+       合成する（湯の丸は素で約147〜156Hz のため不要）。
+       さくら徳次郎（75,648,454 bytes）と横浜青葉（75,648,460 bytes）も
+       同じ itoolsjp 配布の話者で、どちらも Neutral のみ（neutralOnly）。
+       サイズ・SHA-256 は配信実ファイルの実測値（HF の LFS オブジェクト名とも一致） */
+    var SPEAKERS = {
+      f2: { label: "女性（F2）", aivmxUrl: "https://huggingface.co/AiMu1215/sbv2-jvnv-f2-int8/resolve/main/jvnv-F2-jp-int8.aivmx", stageLabel: "音響モデル (JVNV F2 / JP-Extra, int8) を取得", modelBytes: 75657062, modelSha256: "fd6275871ec612a9f5f539577bc56f0469ce448f602e3f53300b50ff670ddf65" },
+      yunomaru: { label: "男性（東部湯の丸）", shortName: "東部湯の丸", aivmxUrl: "https://huggingface.co/AiMu1215/sbv2-tobu-yunomaru-int8/resolve/main/tobu-yunomaru-int8.aivmx", stageLabel: "音響モデル (東部湯の丸, int8) を取得", modelBytes: 75648461, modelSha256: "6003356b1475a4eb879d2f23a93c972a2d7ba2c02299ae77873d2f3c4902069f", neutralOnly: true },
+      tokujiro: { label: "男性（さくら徳次郎）", shortName: "さくら徳次郎", aivmxUrl: "https://huggingface.co/AiMu1215/sbv2-sakura-tokujiro-int8/resolve/main/sakura-tokujiro-int8.aivmx", stageLabel: "音響モデル (さくら徳次郎, int8) を取得", modelBytes: 75648454, modelSha256: "c77f02efd0fe4fa2aec332f5a20f7d8a0182f8f2f114d8b8181b312ab1c93cd5", neutralOnly: true },
+      aoba: { label: "女性（横浜青葉）", shortName: "横浜青葉", aivmxUrl: "https://huggingface.co/AiMu1215/sbv2-yokohama-aoba-int8/resolve/main/yokohama-aoba-int8.aivmx", stageLabel: "音響モデル (横浜青葉, int8) を取得", modelBytes: 75648460, modelSha256: "78101381401af497638fc762fc9cefd5ee193dedf79f27eaf17faf30edff234d", neutralOnly: true }
+    };
+    /* 合成に実際に渡すスタイル。neutralOnly の話者は常に Neutral（styleId 0） */
+    function synthStyle(){
+      var sp = SPEAKERS[tts.speakerId];
+      if (sp && sp.neutralOnly) return { styleId: 0, styleWeight: tts.styleWeight };
+      return { styleId: tts.styleId, styleWeight: tts.styleWeight };
+    }
+    /* 話者に応じてスタイル選択 UI を切り替える（neutralOnly は無効化＋注記表示）。
+       NOVEL 側の実コントロールだけを操作し、TALK 側は syncTalkUI が追従する */
+    function applySpeakerStyleUI(){
+      var sp = SPEAKERS[tts.speakerId];
+      var neutralOnly = !!(sp && sp.neutralOnly);
+      styleSel.disabled = neutralOnly;
+      var wr = document.getElementById("weightRange");
+      if (wr) wr.disabled = neutralOnly;
+      var note = document.getElementById("styleNote");
+      if (note){
+        note.style.display = neutralOnly ? "" : "none";
+        if (neutralOnly) note.textContent = "この声（" + (sp.shortName || sp.label) + "）はノーマル（Neutral）のみのモデルです。感情スタイルは選べません（雰囲気は文章の内容で寄ります）。";
+      }
+      if (neutralOnly){ tts.styleId = 0; styleSel.value = "0"; }
+    }
+    /* 音響モデルの取得オプション（検証つき）。読み込みの両経路（初回・渡し直し）で共用する */
+    function aivmxDlOpt(){
+      var sp = SPEAKERS[tts.speakerId];
+      return { stage: "acoustic-download", expectedBytes: sp.modelBytes, sha256: sp.modelSha256, onProgress: onTtsProgress };
+    }
+    var STYLE_JA = { Neutral: "Neutral（通常）", Angry: "Angry（怒り）", Disgust: "Disgust（嫌悪）", Fear: "Fear（恐怖）", Happy: "Happy（喜び）", Sad: "Sad（悲しみ）", Surprise: "Surprise（驚き）" };
+    var tts = {
+      worker: null, rawWorker: null, loaded: false, loading: false, generating: false,
+      speakerId: "f2", styleId: 0, styleWeight: 5, sampleRate: 44100, currentStage: null,
+      lastProgressAt: 0, modelName: null /* 読み込んだモデル本体に記録された名前（マニフェスト由来） */
+    };
+    var ttsLoadBtn = document.getElementById("ttsLoadBtn");
+    var ttsStagesEl = document.getElementById("ttsStages");
+    var ttsProg = document.getElementById("ttsProg");
+    var ttsProgBar = document.getElementById("ttsProgBar");
+    var ttsProgLabel = document.getElementById("ttsProgLabel");
+    var ttsRetryBtn = document.getElementById("ttsRetryBtn");
+    var ttsStatus = document.getElementById("ttsStatus");
+    var narrGenBtn = document.getElementById("narrGenBtn");
+    var narrStatus = document.getElementById("narrStatus");
+    var narrTable = document.getElementById("narrTable");
+    var styleSel = document.getElementById("styleSel");
+    var speakerSel = document.getElementById("speakerSel");
+    var modeNarrBtn = document.getElementById("modeNarrBtn");
+
+    function getTtsWorker(){
+      if (!tts.worker){
+        /* sbv2-worker.js は ESM バンドル（import.meta と動的 import を含む）。
+           classic ワーカーとして生成すると評価時点で
+           「SyntaxError: import is only valid inside modules」になり、
+           ワーカーが一度も起動しない。PoC 本体（vite-plugin-comlink）でも
+           type:"module" で生成して実機動作した実績があるため、必ず module を指定する */
+        var w = new Worker("assets/sbv2-worker.js", { type: "module" });
+        tts.rawWorker = w;
+        tts.workerError = null;
+        /* ワーカーのスクリプト読み込み失敗や実行時エラーは、放置すると
+           「応答なしのままスピナー」にしか見えないため、拾って見切りに使う */
+        w.addEventListener("error", function(ev){
+          tts.workerError = (ev && ev.message) ? ev.message : "ワーカーでエラーが発生しました";
+        });
+        tts.worker = window.Comlink.wrap(w);
+      }
+      return tts.worker;
+    }
+    /* 止まった取得はワーカーごと終了させないと解放されないため、作り直し用に生の Worker も保持する */
+    function resetTtsWorker(){
+      if (tts.rawWorker){ try { tts.rawWorker.terminate(); } catch (e) {} }
+      tts.rawWorker = null; tts.worker = null; tts.workerError = null;
+    }
+    /* ワーカーが生きているかを軽い往復（ping/pong）で確認する。
+       ワーカー側には sbv2-ping へ即答するだけの小さなリスナーが追加してある。
+       316MB のペイロードを送る前にこれで切り分けることで、「受け渡し中で停止」が
+       ワーカー未起動（この環境でワーカーが動いていない）なのか、初期化の重さ
+       なのかを即座に名指しできる */
+    function pingTtsWorker(timeoutMs){
+      return new Promise(function(resolve){
+        var w = tts.rawWorker;
+        if (!w){ resolve(false); return; }
+        var pingId = "p" + Date.now() + "-" + Math.floor(Math.random() * 1000000);
+        var done = false;
+        function finish(ok){
+          if (done) return; done = true;
+          try { w.removeEventListener("message", onMsg); } catch (e) {}
+          resolve(ok);
+        }
+        function onMsg(ev){
+          if (ev && ev.data && ev.data.type === "sbv2-pong" && ev.data.pingId === pingId) finish(true);
+        }
+        w.addEventListener("message", onMsg);
+        try { w.postMessage({ type: "sbv2-ping", pingId: pingId }); }
+        catch (e) { finish(false); return; }
+        setTimeout(function(){ finish(false); }, timeoutMs);
+      });
+    }
+    function mb1(b){ return (b / 1048576).toFixed(1) + " MB"; }
+    function fmtSec(ms){ return Math.max(0, Math.round(ms / 1000)) + "秒"; }
+    /* 各ステップの目安サイズ（MB）。全体進捗の重み付けに使い、ワーカーから実測totalが届いたらそちらを優先する */
+    var STAGE_MB = { "acoustic-download": 76, "deberta": 241, "dictionary": 6.7, "acoustic": 6.3 };
+    var STAGE_TOTAL_MB = 330;
+    var STAGE_ORDER = ["acoustic-download", "deberta", "dictionary", "acoustic"];
+    var STAGE_SHORT = {
+      "acoustic-download": "音響モデル",
+      "deberta": "DeBERTa（韻律推定）",
+      "dictionary": "日本語辞書",
+      "acoustic": "ONNXセッション"
+    };
+    /* ダウンロード完了後の内部段階（検証・保存・受け渡し）の表示名。
+       バイト数が100%に達した後も「今どの内部処理をしているか・何秒経ったか」を
+       必ず見せ、「取得しています」のまま固まって見える状態を無くす */
+    var PHASE_LABEL = {
+      "verify": "検証中（SHA-256）",
+      "save": "端末へ保存中",
+      "rest": "付属ファイルを取得中",
+      "spawn": "ワーカーを起動中",
+      "handoff": "ワーカーへ受け渡し中",
+      "dictload": "辞書を読み込み中",
+      "session": "セッションを生成中"
+    };
+    /* prog.stages[key] = { state:"wait|active|done|error", loaded, total, startAt, doneSec } */
+    var prog = null, progTimer = null;
+    function progOverall(){
+      if (!prog) return 0;
+      var acc = 0;
+      for (var i = 0; i < STAGE_ORDER.length; i++){
+        var key = STAGE_ORDER[i], st = prog.stages[key], w = STAGE_MB[key];
+        if (st.state === "done") acc += w;
+        else if (st.state === "active"){
+          var frac = 0;
+          if (st.loaded){
+            var tot = st.total || w * 1048576;
+            frac = Math.min(0.99, st.loaded / tot);
+          } else {
+            /* バイト進捗が取れないステップは、経過時間で少しだけ進める（上限つき・完了で100%になる） */
+            frac = Math.min(0.85, (Date.now() - st.startAt) / 1000 / 40);
+          }
+          acc += w * frac;
+        }
+      }
+      return Math.min(99, Math.round(acc / STAGE_TOTAL_MB * 100));
+    }
+    function renderProg(){
+      if (!prog) return;
+      var now = Date.now();
+      var items = ttsStagesEl.querySelectorAll("li");
+      for (var i = 0; i < items.length; i++){
+        var li = items[i], key = li.getAttribute("data-stage"), st = prog.stages[key];
+        li.setAttribute("data-state", st.state);
+        var ic = li.querySelector(".st-ic"), meta = li.querySelector(".st-meta");
+        if (st.state === "done") ic.textContent = "✓";
+        else if (st.state === "error") ic.textContent = "×";
+        else if (st.state === "active") ic.textContent = "";
+        else ic.textContent = String(i + 1);
+        var m = "待機中";
+        if (st.state === "done") m = "完了（" + st.doneSec + "秒）";
+        else if (st.state === "error") m = "失敗";
+        else if (st.state === "active"){
+          var parts = [];
+          if (st.phase) parts.push(PHASE_LABEL[st.phase] || st.phase);
+          if (st.loaded){
+            var bs = mb1(st.loaded) + " / 約" + (st.total ? mb1(st.total) : STAGE_MB[key] + " MB");
+            if (st.total) bs += "（" + Math.floor(st.loaded / st.total * 100) + "%）";
+            parts.push(bs);
+          } else if (!st.phase) {
+            parts.push(key === "acoustic-download" ? "接続中…" : "処理中");
+          }
+          /* 内部段階の表示中は「その段階の経過秒数」を出す（全体の経過は上のラベルに出る） */
+          parts.push("経過 " + fmtSec(now - (st.phase ? st.phaseAt : st.startAt)));
+          m = parts.join("・");
+          if (st.resumed){
+            var rtot = st.total || STAGE_MB[key] * 1048576;
+            m += "・" + Math.floor(st.resumeFrom / rtot * 100) + "%から再開しています（再開" + (st.attempts || 1) + "回目）";
+          }
+        }
+        meta.textContent = m;
+      }
+      var pct = progOverall();
+      ttsProgBar.style.width = pct + "%";
+      var curIdx = 4;
+      for (var ci = 0; ci < STAGE_ORDER.length; ci++){ if (prog.stages[STAGE_ORDER[ci]].state !== "done"){ curIdx = ci + 1; break; } }
+      ttsProgLabel.textContent = "ステップ " + curIdx + " / 4 ・ 全体 " + pct + "%（経過 " + fmtSec(now - prog.startAt) + "）";
+      if (prog.current && !prog.finished && Date.now() >= (tts.retryHoldUntil || 0)){
+        var cst = prog.stages[prog.current];
+        if (cst && cst.phase){
+          ttsStatus.textContent = "読み込み中：" + STAGE_SHORT[prog.current] + " ― " + (PHASE_LABEL[cst.phase] || cst.phase) + "（経過 " + fmtSec(now - cst.phaseAt) + "・全体 " + fmtSec(now - prog.startAt) + "）";
+        } else {
+          var verb = prog.current === "acoustic" ? "を生成しています" : "を取得しています";
+          var rnote = "";
+          if (cst && cst.resumed){
+            var ctot = cst.total || STAGE_MB[prog.current] * 1048576;
+            rnote = "・" + Math.floor(cst.resumeFrom / ctot * 100) + "%から再開中";
+          }
+          ttsStatus.textContent = "読み込み中：" + STAGE_SHORT[prog.current] + verb + "（経過 " + fmtSec(now - prog.startAt) + rnote + "・Wi-Fi推奨）";
+        }
+      }
+    }
+    function startProgTimer(){
+      stopProgTimer();
+      progTimer = setInterval(renderProg, 500);
+    }
+    function stopProgTimer(){
+      if (progTimer){ clearInterval(progTimer); progTimer = null; }
+    }
+    function initProg(){
+      prog = { startAt: Date.now(), current: null, finished: false, stages: {} };
+      for (var i = 0; i < STAGE_ORDER.length; i++)
+        prog.stages[STAGE_ORDER[i]] = { state: "wait", loaded: 0, total: 0, startAt: 0, doneSec: 0, resumed: false, attempts: 0, resumeFrom: 0, phase: null, phaseAt: 0 };
+      var nameEl = ttsStagesEl.querySelector('li[data-stage="acoustic-download"] .st-name');
+      if (nameEl) nameEl.textContent = SPEAKERS[tts.speakerId].stageLabel;
+      ttsProg.classList.add("show");
+      ttsRetryBtn.classList.remove("show");
+      ttsProgBar.style.width = "0%";
+      renderProg();
+      startProgTimer();
+    }
+    function onTtsProgress(p){
+      tts.currentStage = p.stage;
+      tts.lastProgressAt = Date.now();
+      if (!prog) initProg();
+      var now = Date.now();
+      /* このステップより前のステップは完了扱いにする */
+      for (var i = 0; i < STAGE_ORDER.length; i++){
+        var key = STAGE_ORDER[i];
+        if (key === p.stage) break;
+        var prev = prog.stages[key];
+        if (prev.state !== "done"){
+          prev.state = "done";
+          prev.doneSec = prev.startAt ? Math.max(1, Math.round((now - prev.startAt) / 1000)) : 1;
+        }
+      }
+      var cur = prog.stages[p.stage];
+      /* 完了済みのステップは再活性化しない（ワーカーが後段で送る初期通知で巻き戻さないため） */
+      if (cur.state === "done"){ renderProg(); return; }
+      if (cur.state !== "active"){ cur.state = "active"; cur.startAt = now; }
+      /* 内部段階（検証・保存・受け渡し等）の通知。段階が変わった時だけ開始時刻を更新する */
+      if (p.phase){
+        if (cur.phase !== p.phase){ cur.phase = p.phase; cur.phaseAt = now; }
+      } else if (p.loaded !== undefined){
+        cur.phase = null;
+      } else {
+        /* ワーカーからの段階通知。その段階でワーカーが実際に行う重い処理
+           （辞書の取得・読み込み、ONNXセッション生成）を内部段階として表示し、
+           経過秒数を出し続けて「無言で固まって見える」状態を作らない */
+        if (p.stage === "dictionary" && cur.phase !== "dictload"){ cur.phase = "dictload"; cur.phaseAt = now; }
+        else if (p.stage === "acoustic" && cur.phase !== "session"){ cur.phase = "session"; cur.phaseAt = now; }
+      }
+      if (p.loaded) cur.loaded = p.loaded;
+      if (p.total) cur.total = p.total;
+      /* ワーカー内レジューム（Range再開）が起きたら、再開地点を保持して表示に使う */
+      if (p.resumed){
+        if (!cur.resumed){ cur.resumed = true; cur.resumeFrom = cur.loaded; }
+        if (p.attempts) cur.attempts = p.attempts;
+      }
+      prog.current = p.stage;
+      renderProg();
+    }
+    function finishProg(){
+      if (!prog) return;
+      var now = Date.now();
+      for (var i = 0; i < STAGE_ORDER.length; i++){
+        var st = prog.stages[STAGE_ORDER[i]];
+        if (st.state !== "done"){
+          st.state = "done";
+          st.doneSec = st.startAt ? Math.max(1, Math.round((now - st.startAt) / 1000)) : 1;
+        }
+      }
+      prog.current = null; prog.finished = true;
+      stopProgTimer();
+      renderProg();
+      ttsProgBar.style.width = "100%";
+      ttsProgLabel.textContent = "ステップ 4 / 4 ・ 全体 100%（経過 " + fmtSec(now - prog.startAt) + "）";
+    }
+    function failProg(){
+      if (!prog) return;
+      var key = tts.currentStage || prog.current;
+      if (key && prog.stages[key]) prog.stages[key].state = "error";
+      prog.finished = true;
+      stopProgTimer();
+      renderProg();
+      ttsRetryBtn.classList.add("show");
+    }
+    ttsRetryBtn.addEventListener("click", function(){ ttsLoadBtn.click(); });
+
+    /* ===== モデル取得をページ側へ移した理由（0%に戻る問題の根本対策） =====
+       以前はワーカー内だけで取得し、ページ側ウォッチドッグが「進捗イベントが
+       60秒来ない＝停止」とみなしてワーカーを terminate していた。しかし
+       ワーカー内再開処理は、接続待ち（ヘッダ応答なし）の間は進捗イベントを
+       送れないため、配信がヘッダ前で止まるだけで再開が一度も届かないまま
+       ワーカーごと落とされ、保持チャンクが消えて進捗が0%に戻っていた。
+       そこで取得はページ側で行い、部分データを Cache Storage に保存して
+       Range 再開する。ダウンロード区間にウォッチドッグは置かないので、
+       止まっても取得済みは保持され、進捗が巻き戻ることはない。
+       完了したファイルはキャッシュからワーカーへ渡すだけになる。 */
+    /*__DL_BEGIN__*/
+    var DL_CACHE_NAME = "tts-page-models-v1";
+    /* ダウンロード済みバイト列のメモリ上の控え。完了直後はキャッシュから読み戻さず
+       これをワーカーへ渡す（240MBの読み戻しコピーを避ける）。
+       端末への保存（Cache Storage）が見切りを超えた場合の印もここに置く */
+    var dlMemory = {};
+    var dlSaveSkipped = false;
+    var DL_SAVE_TIMEOUT_MS = 120000, DL_READ_TIMEOUT_MS = 120000;
+    var DEBERTA_BASE = "https://huggingface.co/hdae/deberta-v2-large-japanese-char-wwm-onnx-int4-rtn-b256/resolve/3c6921bf67ee5f64a285f49df8636c1036b81881/";
+    var DEBERTA_MODEL_BYTES = 240576205;
+    var DEBERTA_MODEL_SHA256 = "79002e00ea11bb41be2cd0d77e2a2608930cd8b502937101da31739fc6dabf96";
+    function dlSleep(ms){ return new Promise(function(r){ setTimeout(r, ms); }); }
+    function dlPartialKey(url){ return url + (url.indexOf("?") >= 0 ? "&" : "?") + "__partial=1"; }
+    async function dlOpenCache(){
+      try { if (typeof caches !== "undefined") return await caches.open(DL_CACHE_NAME); } catch (e) {}
+      return null;
+    }
+    /* ストリーミング SHA-256（純JS・受信しながら逐次計算する）。
+       以前はダウンロード完了後に crypto.subtle.digest へ 240MB を一括で渡して
+       検証していたが、WKWebView では巨大バッファの digest が極端に遅く、
+       返らないままステップが進まなくなることがあった（バイト数100%表示のまま
+       スピナーが回り続ける症状）。受信チャンクをそのままハッシャーへ流せば、
+       完了後の検証は最終ブロックの確定だけで済み、待ち時間がほぼ消える。 */
+    var SHA256_K = [
+      0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5,
+      0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3, 0x72be5d74, 0x80deb1fe, 0x9bdc06a7, 0xc19bf174,
+      0xe49b69c1, 0xefbe4786, 0x0fc19dc6, 0x240ca1cc, 0x2de92c6f, 0x4a7484aa, 0x5cb0a9dc, 0x76f988da,
+      0x983e5152, 0xa831c66d, 0xb00327c8, 0xbf597fc7, 0xc6e00bf3, 0xd5a79147, 0x06ca6351, 0x14292967,
+      0x27b70a85, 0x2e1b2138, 0x4d2c6dfc, 0x53380d13, 0x650a7354, 0x766a0abb, 0x81c2c92e, 0x92722c85,
+      0xa2bfe8a1, 0xa81a664b, 0xc24b8b70, 0xc76c51a3, 0xd192e819, 0xd6990624, 0xf40e3585, 0x106aa070,
+      0x19a4c116, 0x1e376c08, 0x2748774c, 0x34b0bcb5, 0x391c0cb3, 0x4ed8aa4a, 0x5b9cca4f, 0x682e6ff3,
+      0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208, 0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2
+    ];
+    function Sha256(){
+      this.h = [0x6a09e667 | 0, 0xbb67ae85 | 0, 0x3c6ef372 | 0, 0xa54ff53a | 0, 0x510e527f | 0, 0x9b05688c | 0, 0x1f83d9ab | 0, 0x5be0cd19 | 0];
+      this.buf = new Uint8Array(64); this.bufLen = 0; this.total = 0;
+      this.w = new Int32Array(64);
+    }
+    Sha256.prototype._block = function(data, off){
+      var w = this.w, i, t, x, y, s0, s1;
+      for (i = 0; i < 16; i++)
+        w[i] = (data[off + i * 4] << 24) | (data[off + i * 4 + 1] << 16) | (data[off + i * 4 + 2] << 8) | data[off + i * 4 + 3];
+      for (i = 16; i < 64; i++){
+        x = w[i - 15]; y = w[i - 2];
+        s0 = ((x >>> 7) | (x << 25)) ^ ((x >>> 18) | (x << 14)) ^ (x >>> 3);
+        s1 = ((y >>> 17) | (y << 15)) ^ ((y >>> 19) | (y << 13)) ^ (y >>> 10);
+        w[i] = (w[i - 16] + s0 + w[i - 7] + s1) | 0;
+      }
+      var h = this.h, a = h[0], b = h[1], c = h[2], d = h[3], e = h[4], f = h[5], g = h[6], hh = h[7];
+      for (t = 0; t < 64; t++){
+        var S1 = ((e >>> 6) | (e << 26)) ^ ((e >>> 11) | (e << 21)) ^ ((e >>> 25) | (e << 7));
+        var ch = (e & f) ^ (~e & g);
+        var t1 = (hh + S1 + ch + SHA256_K[t] + w[t]) | 0;
+        var S0 = ((a >>> 2) | (a << 30)) ^ ((a >>> 13) | (a << 19)) ^ ((a >>> 22) | (a << 10));
+        var mj = (a & b) ^ (a & c) ^ (b & c);
+        var t2 = (S0 + mj) | 0;
+        hh = g; g = f; f = e; e = (d + t1) | 0; d = c; c = b; b = a; a = (t1 + t2) | 0;
+      }
+      h[0] = (h[0] + a) | 0; h[1] = (h[1] + b) | 0; h[2] = (h[2] + c) | 0; h[3] = (h[3] + d) | 0;
+      h[4] = (h[4] + e) | 0; h[5] = (h[5] + f) | 0; h[6] = (h[6] + g) | 0; h[7] = (h[7] + hh) | 0;
+    };
+    Sha256.prototype.update = function(data){
+      this.total += data.byteLength;
+      var off = 0, len = data.byteLength;
+      if (this.bufLen){
+        var take = Math.min(64 - this.bufLen, len);
+        this.buf.set(data.subarray(0, take), this.bufLen);
+        this.bufLen += take; off += take;
+        if (this.bufLen === 64){ this._block(this.buf, 0); this.bufLen = 0; }
+      }
+      while (off + 64 <= len){ this._block(data, off); off += 64; }
+      if (off < len){ this.buf.set(data.subarray(off), 0); this.bufLen = len - off; }
+    };
+    Sha256.prototype.hex = function(){
+      var bitsHi = Math.floor(this.total / 536870912); /* total*8 の上位32bit = total / 2^29 */
+      var bitsLo = (this.total % 536870912) * 8;
+      var padLen = (56 - (this.total % 64) + 64) % 64;
+      if (padLen === 0) padLen = 64;
+      var pad = new Uint8Array(padLen + 8);
+      pad[0] = 0x80;
+      var p = padLen;
+      pad[p++] = (bitsHi >>> 24) & 255; pad[p++] = (bitsHi >>> 16) & 255; pad[p++] = (bitsHi >>> 8) & 255; pad[p++] = bitsHi & 255;
+      pad[p++] = (bitsLo >>> 24) & 255; pad[p++] = (bitsLo >>> 16) & 255; pad[p++] = (bitsLo >>> 8) & 255; pad[p++] = bitsLo & 255;
+      this.update(pad);
+      var s = "";
+      for (var i = 0; i < 8; i++) s += ("0000000" + (this.h[i] >>> 0).toString(16)).slice(-8);
+      return s;
+    };
+    /* 既存バイト列（キャッシュ読み戻し分）の検証用。大きな塊で少しずつ流し、
+       進捗を出しながらUIスレッドを塞がない */
+    async function sha256HexStreaming(bytes, onSlice){
+      var h = new Sha256(), SL = 16 * 1048576;
+      for (var off = 0; off < bytes.byteLength; off += SL){
+        h.update(bytes.subarray(off, Math.min(bytes.byteLength, off + SL)));
+        if (onSlice) onSlice(Math.min(bytes.byteLength, off + SL));
+        await dlSleep(0);
+      }
+      if (bytes.byteLength === 0 && onSlice) onSlice(0);
+      return h.hex();
+    }
+    /* 返らない可能性のある非同期処理（巨大ファイルの Cache Storage 読み書き等）を
+       見切るためのレース。タイムアウトしても元の処理は裏で続くが、呼び出し側は
+       先へ進める */
+    function dlRaceTimeout(p, ms){
+      return Promise.race([
+        Promise.resolve(p).then(function(v){ return { value: v }; }, function(e){ return { err: e }; }),
+        dlSleep(ms).then(function(){ return { timeout: true }; })
+      ]);
+    }
+    /* ページ側・再開つきストリーミング取得。
+       opt: { stage, expectedBytes, sha256, onProgress,
+              headerTimeoutMs(既定30秒), stallTimeoutMs(既定20秒), maxFails(既定12), retryBaseMs }
+       試行が失敗しても取得済みチャンクは捨てず、Cache Storage の部分保存からも復元する。
+       ヘッダ待ちは AbortController だけでなく Promise.race でも打ち切るため、
+       abort が効かない環境でも再開試行が必ず進み、試行のたびに進捗通知が届く。 */
+    async function pageDownloadStream(url, opt){
+      opt = opt || {};
+      var stage = opt.stage, expected = opt.expectedBytes || 0;
+      var headerMs = opt.headerTimeoutMs || 30000, stallMs = opt.stallTimeoutMs || 20000;
+      var maxFails = opt.maxFails || 12, retryBase = opt.retryBaseMs || 1000;
+      function emit(loaded, total, resumed, attempts){
+        if (opt.onProgress) opt.onProgress({ stage: stage, loaded: loaded, total: total || expected || undefined, resumed: !!resumed, attempts: attempts || 0 });
+      }
+      function emitPhase(ph){
+        if (opt.onProgress) opt.onProgress({ stage: stage, phase: ph });
+      }
+      var cache = await dlOpenCache();
+      /* 完了済みキャッシュがあればダウンロード自体をスキップ。
+         読み戻し自体が返らない環境でも見切ってダウンロードへ進む */
+      if (cache){
+        try {
+          var hit = await cache.match(url);
+          if (hit){
+            var hr = await dlRaceTimeout(hit.arrayBuffer(), DL_READ_TIMEOUT_MS);
+            if (!hr.timeout && !hr.err){
+              var hb = new Uint8Array(hr.value);
+              var sizeOk = !expected || hb.byteLength === expected;
+              /* 保存時に検証済みの印（ヘッダ）があれば再検証を省略する */
+              var verified = sizeOk && (!opt.sha256 || hit.headers.get("x-sbv2-verified") === opt.sha256);
+              if (sizeOk && !verified && opt.sha256){
+                emitPhase("verify");
+                var hx = await sha256HexStreaming(hb, function(doneB){
+                  if (opt.onProgress) opt.onProgress({ stage: stage, phase: "verify", loaded: doneB, total: hb.byteLength });
+                });
+                verified = hx === opt.sha256;
+              }
+              if (verified){
+                dlMemory[url] = hb;
+                emit(hb.byteLength, hb.byteLength, false, 0);
+                return hb;
+              }
+              try { await dlRaceTimeout(cache.delete(url), 15000); } catch (e) {}
+            }
+          }
+        } catch (e) {}
+      }
+      var chunks = [], have = 0, total = expected || 0;
+      /* 前回途中まで取れていれば、その続きから再開する */
+      if (cache){
+        try {
+          var ph = await cache.match(dlPartialKey(url));
+          if (ph){
+            var pbr = await dlRaceTimeout(ph.arrayBuffer(), DL_READ_TIMEOUT_MS);
+            if (!pbr.timeout && !pbr.err){
+              var pb = new Uint8Array(pbr.value);
+              if (pb.byteLength > 0 && (!expected || pb.byteLength < expected)){ chunks.push(pb); have = pb.byteLength; }
+              else { try { await dlRaceTimeout(cache.delete(dlPartialKey(url)), 15000); } catch (e) {} }
+            }
+          }
+        } catch (e) {}
+      }
+      if (have > 0) emit(have, total, true, 1);
+      /* SHA-256 は受信しながら逐次計算する。再開時は保存済み分を先に流し込む */
+      var hasher = opt.sha256 ? new Sha256() : null;
+      if (hasher && have > 0){
+        emitPhase("verify");
+        for (var hpi = 0; hpi < chunks.length; hpi++){
+          var hpc = chunks[hpi];
+          for (var hpo = 0; hpo < hpc.byteLength; hpo += 16777216){
+            hasher.update(hpc.subarray(hpo, Math.min(hpc.byteLength, hpo + 16777216)));
+            await dlSleep(0);
+          }
+        }
+      }
+      var saveChain = Promise.resolve(), lastSaved = have;
+      function savePartial(){
+        if (!cache) return;
+        var snap = chunks.slice();
+        saveChain = saveChain.then(function(){
+          return cache.put(dlPartialKey(url), new Response(new Blob(snap, { type: "application/octet-stream" })));
+        }).catch(function(){});
+      }
+      var attempts = 0, fails = 0;
+      while (true){
+        attempts++;
+        if (attempts > 1) emit(have, total, true, attempts);
+        var ctl = (typeof AbortController !== "undefined") ? new AbortController() : null;
+        var resp = null, bad = false, complete = false;
+        var headers = {};
+        if (have > 0) headers.Range = "bytes=" + have + "-";
+        var fetchP = fetch(url, { headers: headers, signal: ctl ? ctl.signal : undefined, cache: "no-store" })
+          .then(function(r){ return { resp: r }; }, function(err){ return { err: err }; });
+        var first = await Promise.race([fetchP, dlSleep(headerMs).then(function(){ return { timeout: true }; })]);
+        if (first.timeout){
+          if (ctl){ try { ctl.abort(); } catch (e) {} }
+          bad = true; /* 応答しない接続は見切って、取得済みの続きから再開する */
+        } else if (first.err){
+          bad = true;
+        } else {
+          resp = first.resp;
+        }
+        if (resp){
+          if (resp.status === 416 && total > 0 && have >= total){
+            complete = true;
+            try { if (resp.body) await resp.body.cancel(); } catch (e) {}
+            resp = null;
+          } else if (resp.status >= 400 && resp.status !== 408 && resp.status !== 429){
+            try { if (resp.body) await resp.body.cancel(); } catch (e) {}
+            throw new Error("HTTP " + resp.status + " で取得に失敗しました: " + url);
+          } else if (resp.status !== 200 && resp.status !== 206){
+            bad = true;
+            try { if (resp.body) await resp.body.cancel(); } catch (e) {}
+            resp = null;
+          } else if (resp.status === 206){
+            var crm = /^bytes (\d+)-/.exec(resp.headers.get("content-range") || "");
+            if (crm && parseInt(crm[1], 10) !== have){
+              bad = true;
+              try { if (resp.body) await resp.body.cancel(); } catch (e) {}
+              resp = null;
+            } else {
+              var crt = /\/(\d+|\*)/.exec(resp.headers.get("content-range") || "");
+              if (crt && crt[1] !== "*") total = parseInt(crt[1], 10);
+            }
+          } else { /* 200 */
+            if (have > 0){ chunks = []; have = 0; lastSaved = 0; if (hasher) hasher = new Sha256(); /* サーバーがRangeを無視したため、このファイルだけ最初から取り直す */ }
+            var cl = parseInt(resp.headers.get("content-length") || "0", 10);
+            if (cl > 0) total = cl;
+          }
+        }
+        if (resp && !bad){
+          if (!resp.body){
+            var whole = new Uint8Array(await resp.arrayBuffer());
+            if (whole.byteLength){ chunks.push(whole); have += whole.byteLength; if (hasher) hasher.update(whole); emit(have, total, attempts > 1, attempts); }
+          } else {
+            var reader = resp.body.getReader();
+            while (true){
+              var rp = reader.read(); rp.catch(function(){});
+              var res = null, timedOut = false;
+              try { res = await Promise.race([rp, dlSleep(stallMs).then(function(){ timedOut = true; })]); }
+              catch (e) { bad = true; break; }
+              if (timedOut){
+                try { await reader.cancel(); } catch (e) {}
+                if (ctl){ try { ctl.abort(); } catch (e) {} }
+                bad = true; break;
+              }
+              if (!res || res.done) break;
+              if (res.value && res.value.byteLength){
+                chunks.push(res.value); have += res.value.byteLength;
+                if (hasher) hasher.update(res.value);
+                emit(have, total, attempts > 1, attempts);
+                if (have - lastSaved >= 8 * 1048576){ lastSaved = have; savePartial(); }
+              }
+            }
+          }
+          if (!bad && total > 0 && have < total) bad = true;
+        }
+        if (complete || !bad) break;
+        /* 失敗しても取得済みは保持し、部分保存してから続きを再開する */
+        savePartial();
+        fails++;
+        if (fails > maxFails){
+          /* 部分保存の書き込みが裏で残っていると、次の再試行が古いスナップショットを
+             復元してしまうため、投げる前に保存チェーンの完了を待つ（見切りつき） */
+          await dlRaceTimeout(saveChain, 10000);
+          throw new Error("通信が繰り返し止まり、取得を完了できませんでした（取得済み " + have + " バイトは保存済みで、再試行時は続きから再開します）: " + url);
+        }
+        await dlSleep(Math.min(retryBase + fails * 500, 4000));
+      }
+      /* 部分保存の非同期書き込みをここで揃える。以後の検証・部分データ削除・
+         完了保存が、裏で残った古いスナップショット書き込みと競合しないようにするため */
+      await dlRaceTimeout(saveChain, 15000);
+      var out = new Uint8Array(have), off = 0;
+      for (var ci2 = 0; ci2 < chunks.length; ci2++){ out.set(chunks[ci2], off); off += chunks[ci2].byteLength; chunks[ci2] = null; }
+      chunks = [];
+      if (opt.sha256){
+        /* 検証は受信しながら計算済み。ここでは最終ブロックの確定だけなので一瞬で終わる */
+        emitPhase("verify");
+        if (hasher.hex() !== opt.sha256){
+          if (cache){ try { await dlRaceTimeout(cache.delete(dlPartialKey(url)), 15000); } catch (e) {} }
+          throw new Error("ダウンロードしたファイルの検証（SHA-256）が一致しませんでした。通信環境の良い場所で再試行してください: " + url);
+        }
+      }
+      dlMemory[url] = out;
+      if (cache){
+        /* 端末への保存が返らない／極端に遅い環境でも、読み込み自体は止めない。
+           データはメモリ上にあるのでこのまま次へ進み、保存だけ諦める
+           （その場合、次回開いたときに再ダウンロードになる場合がある） */
+        emitPhase("save");
+        var putR = await dlRaceTimeout(cache.put(url, new Response(out, { headers: { "Content-Type": "application/octet-stream", "x-sbv2-verified": opt.sha256 || "" } })), opt.saveTimeoutMs || DL_SAVE_TIMEOUT_MS);
+        if (putR.timeout || putR.err) dlSaveSkipped = true;
+        try { await dlRaceTimeout(cache.delete(dlPartialKey(url)), 15000); } catch (e) {}
+      }
+      emit(out.byteLength, out.byteLength, attempts > 1, attempts);
+      return out;
+    }
+    /* ===== 分割（Range）取得：長いストリーミング受信が使えない環境向けの代替経路 =====
+       ストリーミング受信は「1本の長い接続」を最後まで保ち続ける必要がある。
+       公開ページの埋め込み表示や一部のブラウザ環境では、その接続が確立直後に
+       繰り返し切られ、0バイトのまま全試行が失敗することがある（公開後の実機で
+       発生した症状）。分割取得は 8MiB ごとの短いリクエストを積み上げる方式で、
+       1本が切られても被害はその区間だけで、取得済みは保持して続きから取り直せる。
+       取得したバイト列は完了後にサイズ＋SHA-256 で照合するため、経路が違っても
+       正しさの保証は従来経路と同等になる。 */
+    async function fetchRange(url, start, end, timeoutMs){
+      var ctl = (typeof AbortController !== "undefined") ? new AbortController() : null;
+      var op = (async function(){
+        var resp = await fetch(url, { headers: { Range: "bytes=" + start + "-" + end }, signal: ctl ? ctl.signal : undefined, cache: "no-store" });
+        var meta = { status: resp.status, contentRange: resp.headers.get("content-range") || "", contentLength: parseInt(resp.headers.get("content-length") || "0", 10) || 0 };
+        if (resp.status === 200 && start > 0){
+          /* サーバーが Range を無視して全体を返そうとした場合は、受け取らずに
+             「最初から取り直しが必要」とだけ返す（無駄な全量受信をしない） */
+          try { if (resp.body) await resp.body.cancel(); } catch (e) {}
+          meta.ignoredRange = true;
+          meta.body = new Uint8Array(0);
+          return meta;
+        }
+        meta.body = new Uint8Array(await resp.arrayBuffer());
+        return meta;
+      })();
+      op.catch(function(){});
+      var r = await Promise.race([
+        op.then(function(v){ return { v: v }; }, function(e){ return { err: e }; }),
+        dlSleep(timeoutMs).then(function(){ return { timeout: true }; })
+      ]);
+      if (r.timeout){
+        if (ctl){ try { ctl.abort(); } catch (e) {} }
+        return { err: new Error("区間取得がタイムアウトしました") };
+      }
+      if (r.err) return { err: r.err };
+      return r.v;
+    }
+    function xhrRange(url, start, end, timeoutMs){
+      return new Promise(function(resolve){
+        var xhr = null, done = false;
+        function fin(r){ if (!done){ done = true; resolve(r); } }
+        try {
+          xhr = new XMLHttpRequest();
+          xhr.open("GET", url, true);
+          xhr.responseType = "arraybuffer";
+          try { xhr.setRequestHeader("Range", "bytes=" + start + "-" + end); } catch (e) {}
+          xhr.timeout = timeoutMs;
+          xhr.onload = function(){
+            var cr = "", cl = 0;
+            try { cr = xhr.getResponseHeader("content-range") || ""; } catch (e) {}
+            try { cl = parseInt(xhr.getResponseHeader("content-length") || "0", 10) || 0; } catch (e) {}
+            fin({ status: xhr.status, body: xhr.response ? new Uint8Array(xhr.response) : new Uint8Array(0), contentRange: cr, contentLength: cl });
+          };
+          xhr.onerror = function(){ fin({ err: new Error("XHRで通信エラーが発生しました") }); };
+          xhr.ontimeout = function(){ fin({ err: new Error("XHRがタイムアウトしました") }); };
+          xhr.onabort = function(){ fin({ err: new Error("XHRが中断されました") }); };
+          xhr.send();
+        } catch (e) { fin({ err: e }); }
+      });
+    }
+    async function pageDownloadChunked(url, opt, useXhr, priorErr){
+      opt = opt || {};
+      var stage = opt.stage, expected = opt.expectedBytes || 0;
+      function emit(loaded, total, resumed, attempts){
+        if (opt.onProgress) opt.onProgress({ stage: stage, loaded: loaded, total: total || expected || undefined, resumed: !!resumed, attempts: attempts || 0 });
+      }
+      function emitPhase(ph){
+        if (opt.onProgress) opt.onProgress({ stage: stage, phase: ph });
+      }
+      var cache = await dlOpenCache();
+      /* 完了済みキャッシュがあればダウンロード自体をスキップ（従来経路と同じ扱い） */
+      if (cache){
+        try {
+          var hit = await cache.match(url);
+          if (hit){
+            var hr = await dlRaceTimeout(hit.arrayBuffer(), DL_READ_TIMEOUT_MS);
+            if (!hr.timeout && !hr.err){
+              var hb = new Uint8Array(hr.value);
+              var sizeOk = !expected || hb.byteLength === expected;
+              var verified = sizeOk && (!opt.sha256 || hit.headers.get("x-sbv2-verified") === opt.sha256);
+              if (sizeOk && !verified && opt.sha256){
+                emitPhase("verify");
+                var hx = await sha256HexStreaming(hb, function(doneB){
+                  if (opt.onProgress) opt.onProgress({ stage: stage, phase: "verify", loaded: doneB, total: hb.byteLength });
+                });
+                verified = hx === opt.sha256;
+              }
+              if (verified){
+                dlMemory[url] = hb;
+                emit(hb.byteLength, hb.byteLength, false, 0);
+                return hb;
+              }
+              try { await dlRaceTimeout(cache.delete(url), 15000); } catch (e) {}
+            }
+          }
+        } catch (e) {}
+      }
+      var chunks = [], have = 0, total = expected || 0;
+      /* 前回途中まで取れていれば、その続きから再開する */
+      if (cache){
+        try {
+          var ph = await cache.match(dlPartialKey(url));
+          if (ph){
+            var pbr = await dlRaceTimeout(ph.arrayBuffer(), DL_READ_TIMEOUT_MS);
+            if (!pbr.timeout && !pbr.err){
+              var pb = new Uint8Array(pbr.value);
+              if (pb.byteLength > 0 && (!expected || pb.byteLength < expected)){ chunks.push(pb); have = pb.byteLength; }
+              else { try { await dlRaceTimeout(cache.delete(dlPartialKey(url)), 15000); } catch (e) {} }
+            }
+          }
+        } catch (e) {}
+      }
+      var restored = have;
+      if (have > 0) emit(have, total, true, 1);
+      /* SHA-256 は受信しながら逐次計算する。再開時は保存済み分を先に流し込む */
+      var hasher = opt.sha256 ? new Sha256() : null;
+      if (hasher && have > 0){
+        emitPhase("verify");
+        for (var hpi = 0; hpi < chunks.length; hpi++){
+          var hpc = chunks[hpi];
+          for (var hpo = 0; hpo < hpc.byteLength; hpo += 16777216){
+            hasher.update(hpc.subarray(hpo, Math.min(hpc.byteLength, hpo + 16777216)));
+            await dlSleep(0);
+          }
+        }
+      }
+      var saveChain = Promise.resolve(), sinceSave = 0;
+      function savePartial(){
+        if (!cache) return;
+        var snap = chunks.slice();
+        saveChain = saveChain.then(function(){
+          return cache.put(dlPartialKey(url), new Response(new Blob(snap, { type: "application/octet-stream" })));
+        }).catch(function(){});
+      }
+      var CHUNK = 8 * 1048576;
+      var attempts = 0, fails = 0, lastErr = priorErr || null;
+      while (!total || have < total){
+        attempts++;
+        var start = have;
+        var end = have + CHUNK - 1;
+        if (total && end > total - 1) end = total - 1;
+        var r = useXhr ? await xhrRange(url, start, end, 45000) : await fetchRange(url, start, end, 45000);
+        var bad = false;
+        if (r.err){ bad = true; lastErr = r.err; }
+        else if (r.status === 416 && total > 0 && have >= total){ break; }
+        else if (r.status >= 400 && r.status !== 408 && r.status !== 429){
+          throw new Error("HTTP " + r.status + " で取得に失敗しました: " + url);
+        }
+        else if (r.status === 206){
+          var crm = /^bytes (\d+)-(\d+)\/(\d+|\*)/.exec(r.contentRange || "");
+          if (crm && parseInt(crm[1], 10) !== start){ bad = true; lastErr = new Error("区間の開始位置が一致しませんでした"); }
+          else if (!r.body || r.body.byteLength === 0){ bad = true; lastErr = new Error("空の区間が返りました"); }
+          else {
+            if (crm && crm[3] !== "*") total = parseInt(crm[3], 10);
+            chunks.push(r.body); have += r.body.byteLength;
+            if (hasher) hasher.update(r.body);
+            emit(have, total, restored > 0 || attempts > 1, attempts);
+            sinceSave += r.body.byteLength;
+            if (sinceSave >= 16 * 1048576){ sinceSave = 0; savePartial(); }
+          }
+        }
+        else if (r.status === 200){
+          if (r.ignoredRange || start > 0){
+            /* サーバーが Range を無視したため、このファイルだけ最初から取り直す */
+            chunks = []; have = 0; restored = 0; sinceSave = 0;
+            if (hasher) hasher = new Sha256();
+            total = expected || 0;
+            continue;
+          }
+          if (!r.body || r.body.byteLength === 0){ bad = true; lastErr = new Error("空の応答が返りました"); }
+          else {
+            chunks.push(r.body); have += r.body.byteLength;
+            if (hasher) hasher.update(r.body);
+            total = have;
+            emit(have, total, attempts > 1, attempts);
+          }
+        }
+        else { bad = true; lastErr = new Error("HTTP " + r.status); }
+        if (bad){
+          savePartial();
+          fails++;
+          if (fails > 10){
+            await dlRaceTimeout(saveChain, 10000);
+            throw new Error("通信が繰り返し止まり、取得を完了できませんでした（取得済み " + have + " バイトは保存済みで、再試行時は続きから再開します）" + (lastErr ? "（最後のエラー: " + (lastErr.message || String(lastErr)) + "）" : "") + ": " + url);
+          }
+          await dlSleep(Math.min(1000 + fails * 500, 4000));
+        } else {
+          fails = 0;
+        }
+      }
+      await dlRaceTimeout(saveChain, 15000);
+      var out = new Uint8Array(have), off = 0;
+      for (var ci2 = 0; ci2 < chunks.length; ci2++){ out.set(chunks[ci2], off); off += chunks[ci2].byteLength; chunks[ci2] = null; }
+      chunks = [];
+      if (expected && out.byteLength !== expected){
+        throw new Error("取得したファイルのサイズが一致しませんでした（" + out.byteLength + " / " + expected + " バイト）: " + url);
+      }
+      if (opt.sha256){
+        emitPhase("verify");
+        if (hasher.hex() !== opt.sha256){
+          if (cache){ try { await dlRaceTimeout(cache.delete(dlPartialKey(url)), 15000); } catch (e) {} }
+          throw new Error("ダウンロードしたファイルの検証（SHA-256）が一致しませんでした。通信環境の良い場所で再試行してください: " + url);
+        }
+      }
+      dlMemory[url] = out;
+      if (cache){
+        emitPhase("save");
+        var putR = await dlRaceTimeout(cache.put(url, new Response(out, { headers: { "Content-Type": "application/octet-stream", "x-sbv2-verified": opt.sha256 || "" } })), opt.saveTimeoutMs || DL_SAVE_TIMEOUT_MS);
+        if (putR.timeout || putR.err) dlSaveSkipped = true;
+        try { await dlRaceTimeout(cache.delete(dlPartialKey(url)), 15000); } catch (e) {}
+      }
+      emit(out.byteLength, out.byteLength, attempts > 1, attempts);
+      return out;
+    }
+    /* 取得の入口。まず従来のストリーミング受信を試し（試行回数は絞り、接続が
+       即座に切られる環境で41秒を溶かして終わらないようにする）、駄目なら
+       分割（Range）取得、最後に XHR による分割取得へ切り替える。どの経路でも
+       取得済み部分は Cache Storage に保存され、次の経路が続きから再開する */
+    async function pageDownload(url, opt){
+      opt = opt || {};
+      var streamOpt = {};
+      for (var k in opt) streamOpt[k] = opt[k];
+      if (!streamOpt.maxFails) streamOpt.maxFails = 3;
+      var firstErr = null;
+      try { return await pageDownloadStream(url, streamOpt); }
+      catch (e) { firstErr = e; }
+      try { return await pageDownloadChunked(url, opt, false, firstErr); }
+      catch (e2) {
+        try { return await pageDownloadChunked(url, opt, true, e2); }
+        catch (e3) {
+          var msg = (e3 && e3.message) ? e3.message : String(e3);
+          throw new Error(msg + " 公開ページ（muse.ai）の埋め込み表示では、プラットフォーム側の制限で外部サイト（Hugging Face）への通信が遮断されるため、この表示のままではモデルを取得できません。お手数ですが、Muse アプリ内でこのアプリを開いて読み込んでください（アプリ内表示では通常どおり取得できます）。");
+        }
+      }
+    }
+    async function readDlCache(url){
+      var cache = await dlOpenCache();
+      if (!cache) return null;
+      var hit = await cache.match(url);
+      if (!hit) return null;
+      var hr = await dlRaceTimeout(hit.arrayBuffer(), DL_READ_TIMEOUT_MS);
+      if (hr.timeout || hr.err) return null;
+      return new Uint8Array(hr.value);
+    }
+    /* 取得済みバイト列の読み出し。ダウンロード直後はメモリ上の控えをそのまま使い、
+       240MBをキャッシュから読み戻す二重コピーを避ける。ワーカーへの転送で
+       バッファが切り離されると byteLength が 0 になるので、その場合だけ
+       キャッシュから読み直す（ワーカーを作り直す再試行でも安全） */
+    async function readDl(url){
+      var m = dlMemory[url];
+      if (m && m.byteLength > 0) return m;
+      var c = await readDlCache(url);
+      if (c) dlMemory[url] = c;
+      return c;
+    }
+    /* ワーカーへ渡すプリフェッチ一式を、ページ側キャッシュから組み立てる。
+       ワーカーを作り直すたびに新しいコピーを渡せる（転送でバッファが切り離されても安全）。 */
+    async function prefetchFromCache(){
+      var aivmx = await readDl(SPEAKERS[tts.speakerId].aivmxUrl);
+      var model = await readDl(DEBERTA_BASE + "model.onnx");
+      var vocab = await readDl(DEBERTA_BASE + "vocab.txt");
+      var clean = await readDl(DEBERTA_BASE + "clean_ranges.json");
+      var meta = await readDl(DEBERTA_BASE + "meta.json");
+      if (!aivmx || !model || !vocab || !clean || !meta) throw new Error("キャッシュからモデルを読み出せませんでした");
+      var dec = new TextDecoder();
+      return { aivmxBytes: aivmx, debertaModel: model, vocabText: dec.decode(vocab), cleanRangesText: dec.decode(clean), metaText: dec.decode(meta) };
+    }
+    /*__DL_END__*/
+    /* 最初の進捗が届く前からステップ1を「実行中」にして、止まって見えないようにする */
+    function markStageActive(key){
+      if (!prog) return;
+      var st = prog.stages[key];
+      if (st && st.state === "wait"){ st.state = "active"; st.startAt = Date.now(); }
+      prog.current = key;
+      tts.currentStage = key;
+      renderProg();
+    }
+    /* ウォッチドッグは「ワーカー側の残り作業（起動確認＋辞書取得＋セッション生成）」
+       だけに置く。ダウンロード済みバイト列はページ側キャッシュにあるため、ここで
+       ワーカーを作り直してもモデル取得の進捗は失われず、再試行は短時間で済む。
+       見切りは段階ごとに変える：
+       - ワーカー起動（ping応答）: 20秒。316MBを送る前に死活を切り分ける
+       - ペイロード送信後、最初の進捗イベントまで: 60秒。ワーカーは aivmx を
+         受け取った直後に最初の通知を送る設計なので、1分無言なら受け渡し自体が
+         詰まっている（以前はここが180秒×再試行で、約1分では何も起きなかった）
+       - 辞書段階（ワーカーが辞書を取得・展開する）: 240秒
+       - セッション生成段階（240MB級モデルの ORT セッション生成は端末では
+         分単位かかりうる。ワーカーのスレッドが占有され途中通知が出せない間も、
+         ページ側はフェーズ名＋経過秒数を出し続ける）: 300秒
+       - その他: 180秒 */
+    var SPAWN_TIMEOUT_MS = 20000;
+    var FIRST_PROGRESS_MS = 60000;
+    var STAGE_STALL_MS = { dictionary: 240000, acoustic: 300000 };
+    var DEFAULT_STALL_MS = 180000;
+    async function loadWorkerWithPrefetch(prefetch){
+      var worker = getTtsWorker();
+      /* フェーズ1: 起動確認。応答が無ければワーカーを作り直してもう一度だけ試し、
+         それでも駄目なら「ワーカーが起動しない」ことを名指しで失敗にする */
+      onTtsProgress({ stage: "deberta", phase: "spawn" });
+      var alive = await pingTtsWorker(SPAWN_TIMEOUT_MS);
+      if (!alive && !tts.workerError){
+        resetTtsWorker();
+        worker = getTtsWorker();
+        alive = await pingTtsWorker(SPAWN_TIMEOUT_MS);
+      }
+      if (!alive){
+        var deadMsg = tts.workerError
+          ? "音声合成ワーカーの読み込みでエラーが発生しました：" + tts.workerError
+          : "音声合成ワーカーを起動できませんでした（このアプリ内ブラウザではワーカーが動作していない可能性があります）。ページを開き直すか、Safariで開くと読み込める場合があります";
+        resetTtsWorker();
+        var de = new Error(deadMsg);
+        de.workerDead = true;
+        throw de;
+      }
+      /* フェーズ2: 取得済みバイト列を受け渡し、ワーカー側の初期化を待つ。
+         バッファは Transferable で渡すためコピーは発生しない（ゼロコピー転送
+         自体は一瞬で終わるはずで、ここで長く止まるなら初期化側の問題） */
+      onTtsProgress({ stage: "deberta", phase: "handoff" });
+      return await new Promise(function(resolve, reject){
+        var settled = false;
+        var sawProgress = false;
+        var lastAt = Date.now();
+        tts.lastProgressAt = lastAt;
+        var cb = window.Comlink.proxy(function(p){
+          sawProgress = true;
+          lastAt = Date.now();
+          tts.lastProgressAt = lastAt;
+          onTtsProgress(p);
+        });
+        var iv = setInterval(function(){
+          if (settled) return;
+          if (tts.workerError){
+            settled = true;
+            clearInterval(iv);
+            resetTtsWorker();
+            var we = new Error("音声合成ワーカーでエラーが発生しました：" + tts.workerError + "（ダウンロード済みのモデルは保存されているため、再試行は短時間で済みます）");
+            we.stall = true;
+            we.fromWorkerError = true;
+            reject(we);
+            return;
+          }
+          var limit = sawProgress ? (STAGE_STALL_MS[tts.currentStage] || DEFAULT_STALL_MS) : FIRST_PROGRESS_MS;
+          if (Date.now() - lastAt > limit){
+            settled = true;
+            clearInterval(iv);
+            resetTtsWorker();
+            var e = new Error(sawProgress
+              ? "「" + (STAGE_SHORT[tts.currentStage] || "モデル") + "」の準備で進捗が止まりました（ダウンロード済みのモデルは保存されているため、再試行は短時間で済みます）"
+              : "ワーカーへモデルを受け渡したあと、ワーカーから応答がありませんでした（ダウンロード済みのモデルは保存されているため、再試行は短時間で済みます）");
+            e.stall = true;
+            reject(e);
+          }
+        }, 1000);
+        var payload = {
+          provider: "wasm",
+          aivmxUrl: SPEAKERS[tts.speakerId].aivmxUrl,
+          ortWasmBaseUrl: "https://unpkg.com/onnxruntime-web@1.27.0/dist/",
+          prefetch: prefetch
+        };
+        var transferables = [];
+        if (prefetch.aivmxBytes && prefetch.aivmxBytes.buffer) transferables.push(prefetch.aivmxBytes.buffer);
+        if (prefetch.debertaModel && prefetch.debertaModel.buffer) transferables.push(prefetch.debertaModel.buffer);
+        var arg = transferables.length ? window.Comlink.transfer(payload, transferables) : payload;
+        worker.load(arg, cb).then(function(r){
+          if (!settled){ settled = true; clearInterval(iv); resolve(r); }
+        }, function(err){
+          if (!settled){ settled = true; clearInterval(iv); reject(err); }
+        });
+      });
+    }
+
+    ttsLoadBtn.addEventListener("click", async function(){
+      if (tts.loading) return;
+      tts.loading = true; tts.loaded = false;
+      ttsLoadBtn.disabled = true; narrGenBtn.disabled = true;
+      ttsStagesEl.style.display = "block";
+      tts.currentStage = null;
+      dlSaveSkipped = false;
+      initProg();
+      markStageActive("acoustic-download");
+      ttsStatus.textContent = "読み込み中…（Wi-Fi推奨・合計 約330MB）";
+      try {
+        /* フェーズA：ページ側でダウンロードする（ウォッチドッグ無し・Range再開つき・
+           部分データは Cache Storage に保存されるため、途中で失敗しても0%には戻らない） */
+        await pageDownload(SPEAKERS[tts.speakerId].aivmxUrl, aivmxDlOpt());
+        await pageDownload(DEBERTA_BASE + "model.onnx", { stage: "deberta", expectedBytes: DEBERTA_MODEL_BYTES, sha256: DEBERTA_MODEL_SHA256, onProgress: onTtsProgress });
+        onTtsProgress({ stage: "deberta", phase: "rest" });
+        await pageDownload(DEBERTA_BASE + "vocab.txt", { stage: "deberta", onProgress: function(){} });
+        await pageDownload(DEBERTA_BASE + "clean_ranges.json", { stage: "deberta", onProgress: function(){} });
+        await pageDownload(DEBERTA_BASE + "meta.json", { stage: "deberta", onProgress: function(){} });
+        /* フェーズB：取得済みバイト列をワーカーへ渡し、辞書＋セッション生成だけを行う。
+           ここで失敗してもダウンロードはやり直さず、キャッシュから渡し直すだけ。
+           起動確認（spawn）→受け渡し（handoff）のフェーズ表示は
+           loadWorkerWithPrefetch 側が出す */
+        var result = null, sessionRetry = 0;
+        while (true){
+          tts.lastProgressAt = Date.now();
+          try {
+            var pf;
+            try { pf = await prefetchFromCache(); }
+            catch (pfErr) {
+              /* 前回の受け渡しでメモリ上の控えが切り離され（Transferable転送）、
+                 端末への保存も完了していなかった場合だけ、不足分を取り直す。
+                 pageDownload は完了キャッシュ→部分保存→再開の順で処理するため、
+                 保存できていたファイルは再ダウンロードにならない */
+              await pageDownload(SPEAKERS[tts.speakerId].aivmxUrl, aivmxDlOpt());
+              await pageDownload(DEBERTA_BASE + "model.onnx", { stage: "deberta", expectedBytes: DEBERTA_MODEL_BYTES, sha256: DEBERTA_MODEL_SHA256, onProgress: onTtsProgress });
+              await pageDownload(DEBERTA_BASE + "vocab.txt", { stage: "deberta", onProgress: function(){} });
+              await pageDownload(DEBERTA_BASE + "clean_ranges.json", { stage: "deberta", onProgress: function(){} });
+              await pageDownload(DEBERTA_BASE + "meta.json", { stage: "deberta", onProgress: function(){} });
+              pf = await prefetchFromCache();
+            }
+            result = await loadWorkerWithPrefetch(pf); break;
+          }
+          catch (err2) {
+            if (err2 && err2.stall && sessionRetry < 2){
+              sessionRetry++;
+              tts.retryHoldUntil = Date.now() + 4000;
+              ttsStatus.textContent = "準備が止まったため、ワーカーを作り直して再試行しています（" + sessionRetry + "回目）。ダウンロード済みのモデルは保存されているため、モデル取得はやり直しません。";
+              await dlSleep(1200);
+              continue;
+            }
+            throw err2;
+          }
+        }
+        finishProg();
+        tts.loaded = true;
+        tts.sampleRate = result.sampleRate;
+        /* 読み込んだモデル本体のマニフェストに記録された名前（例：jvnv-F2-jp）。
+           ボタンの表示名ではなくモデル自身の申告なので、実際に読み込まれた
+           話者の確認に使える。完了メッセージにもそのまま出す */
+        tts.modelName = null;
+        try { tts.modelName = (result.manifest && result.manifest.name) || null; } catch (e) {}
+        /* スタイル一覧はマニフェスト（実モデル）から作り直す */
+        var styles = null;
+        try { styles = result.manifest && result.manifest.speakers && result.manifest.speakers[0] && result.manifest.speakers[0].styles; } catch (e) {}
+        if (styles && styles.length){
+          styleSel.innerHTML = "";
+          for (var si2 = 0; si2 < styles.length; si2++){
+            var opt = document.createElement("option");
+            opt.value = styles[si2].localId;
+            opt.textContent = STYLE_JA[styles[si2].name] || styles[si2].name;
+            styleSel.appendChild(opt);
+          }
+          tts.styleId = styles[0].localId; styleSel.value = String(tts.styleId);
+        }
+        ttsStatus.textContent = "準備完了：" + SPEAKERS[tts.speakerId].label + "（読み込み " + (result.elapsedMs / 1000).toFixed(1) + " 秒）。" + (tts.modelName ? "読み込んだモデル本体の記録名は「" + tts.modelName + "」です。" : "") + "「ナレーションを生成」を押すと、行ごとに合成します。";
+        if (dlSaveSkipped) ttsStatus.textContent += "（端末への保存が完了しなかったため、次回開いたときに再ダウンロードが必要になる場合があります）";
+        narrGenBtn.disabled = false;
+        ttsLoadBtn.textContent = "TTSモデルを読み込み直す";
+      } catch (err) {
+        failProg();
+        /* ワーカーのスクリプト／起動エラーは通信の問題ではないため、
+           汎用の「通信環境の良い場所で」文案を付けない */
+        var errTail = (err && (err.workerDead || err.fromWorkerError))
+          ? '<br>このエラーは通信環境とは関係ありません。ページを開き直してから、下の「読み込みを再試行する」ボタンでやり直してください（ダウンロード済みのモデルは保存されているため、再ダウンロードは不要です）。'
+          : '<br>通信環境の良い場所で、下の「読み込みを再試行する」ボタンからやり直してください。';
+        ttsStatus.innerHTML = '<span class="warn">読み込みに失敗しました</span>（段階：' + (tts.currentStage ? STAGE_SHORT[tts.currentStage] : "不明") + "）：" + escapeHtml(err && err.message ? err.message : String(err)) + errTail;
+      } finally {
+        tts.loading = false;
+        ttsLoadBtn.disabled = false;
+      }
+    });
+
+    /* 話者選択はプルダウン（select）。話者状態は tts.speakerId の1か所だけが持ち、
+       TALK側のセレクトもこの change へ転送される（両タブ共有・二重管理なし） */
+    speakerSel.addEventListener("change", function(){
+      var v = speakerSel.value;
+      if (tts.speakerId === v) return;
+      tts.speakerId = v;
+      tts.modelName = null;
+      applySpeakerStyleUI();
+      if (tts.loaded){
+        tts.loaded = false;
+        narrGenBtn.disabled = true;
+        ttsStatus.textContent = "話者を「" + SPEAKERS[v].label + "」に変えました。モデルを読み込み直してください（DeBERTaと辞書はキャッシュされます）。";
+      }
+      invalidateNarr("話者が変わったため");
+    });
+    styleSel.addEventListener("change", function(){
+      tts.styleId = parseInt(styleSel.value, 10) || 0;
+      invalidateNarr("スタイルが変わったため");
+    });
+    var weightRange = document.getElementById("weightRange");
+    var weightVal = document.getElementById("weightVal");
+    weightRange.addEventListener("input", function(){
+      tts.styleWeight = parseInt(weightRange.value, 10) || 0;
+      weightVal.textContent = tts.styleWeight;
+    });
+    weightRange.addEventListener("change", function(){ invalidateNarr("スタイルの強さが変わったため"); });
+
+    /* 16bit PCM WAV（ワーカーの encodeWav 出力）を Float32Array に戻す */
+    function parseWavMono(bytes){
+      var view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+      var sr = view.getUint32(24, true);
+      var dataOff = 44, dataLen = bytes.byteLength - 44;
+      /* fmt/data チャンクを走査して data の位置を正確に取る */
+      var pos = 12;
+      while (pos + 8 <= bytes.byteLength){
+        var id = String.fromCharCode(bytes[pos], bytes[pos + 1], bytes[pos + 2], bytes[pos + 3]);
+        var sz = view.getUint32(pos + 4, true);
+        if (id === "data"){ dataOff = pos + 8; dataLen = Math.min(sz, bytes.byteLength - dataOff); break; }
+        pos += 8 + sz + (sz % 2);
+      }
+      var n = Math.floor(dataLen / 2);
+      var out = new Float32Array(n);
+      for (var i = 0; i < n; i++) out[i] = view.getInt16(dataOff + i * 2, true) / 32767;
+      return { samples: out, sampleRate: sr };
+    }
+    /* ナレーションPCM（Float32・モノラル）を MP3 化する。変換は端末内のみ（lamejs）。
+       元のサンプルレートのまま、ナレーション用途に十分な 128kbps でエンコードする */
+    function encodeMp3Mono(samples, sampleRate){
+      if (typeof window.lamejs === "undefined" || !window.lamejs.Mp3Encoder)
+        throw new Error("MP3エンコーダ（lamejs）が読み込まれていません");
+      var enc = new window.lamejs.Mp3Encoder(1, sampleRate, 128);
+      var parts = [];
+      var BLOCK = 1152;
+      var pcm = new Int16Array(BLOCK);
+      for (var off = 0; off < samples.length; off += BLOCK){
+        var n = Math.min(BLOCK, samples.length - off);
+        for (var i = 0; i < n; i++){
+          var v = Math.max(-1, Math.min(1, samples[off + i]));
+          pcm[i] = v < 0 ? Math.round(v * 32768) : Math.round(v * 32767);
+        }
+        var data = enc.encodeBuffer(n === BLOCK ? pcm : pcm.subarray(0, n));
+        if (data && data.length) parts.push(new Uint8Array(data));
+      }
+      var tail = enc.flush();
+      if (tail && tail.length) parts.push(new Uint8Array(tail));
+      return new Blob(parts, { type: "audio/mpeg" });
+    }
+    /* 書き出し完了時にナレーションMP3を用意する。失敗しても動画の完成は妨げず、
+       ボタンは出さない（案内文もその場合に合わせて出し分ける） */
+    function buildNarrationMp3(narr){
+      try {
+        lastMp3Blob = encodeMp3Mono(narr.mix, narr.sampleRate);
+        mp3Link.style.display = "block";
+        return true;
+      } catch (e) {
+        lastMp3Blob = null;
+        mp3Link.style.display = "none";
+        return false;
+      }
+    }
+
+    function invalidateNarr(reason){
+      if (!state.narr) return;
+      stopNarrAudio();
+      state.narr = null;
+      state.mode = "fixed";
+      syncModeUI();
+      narrTable.classList.remove("show");
+      narrStatus.textContent = reason + "、ナレーションを破棄しました。使う場合は「ナレーションを生成」を押し直してください。";
+      refreshCount();
+    }
+    function syncModeUI(){
+      var btns = document.querySelectorAll("#modeSeg button");
+      for (var i = 0; i < btns.length; i++)
+        btns[i].setAttribute("aria-pressed", btns[i].getAttribute("data-mode") === state.mode ? "true" : "false");
+      modeNarrBtn.disabled = !state.narr;
+      durRange.disabled = state.mode === "narr";
+      durRange.style.opacity = state.mode === "narr" ? "0.45" : "1";
+    }
+    segWire("modeSeg", "data-mode", function(v){
+      if (v === "narr" && !state.narr) return;
+      stopNarrAudio();
+      state.mode = v;
+      state.t = 0;
+      syncModeUI();
+      refreshCount();
+      if (v === "narr" && state.playing) startNarrAudio(0);
+      else if (v === "fixed" && state.playing) startBgmAudio(0);
+    });
+
+    narrGenBtn.addEventListener("click", async function(){
+      if (!tts.loaded || tts.generating) return;
+      var scenes = getScenes();
+      tts.generating = true;
+      narrGenBtn.disabled = true; ttsLoadBtn.disabled = true;
+      stopNarrAudio();
+      try {
+        var worker = getTtsWorker();
+        var sr = tts.sampleRate;
+        var padSamples = Math.round(NARR_PAD * sr);
+        var linePcm = [], durations = [], starts = [], acc = 0, totalSamples = 0;
+        for (var i = 0; i < scenes.length; i++){
+          narrStatus.textContent = "合成中… " + (i + 1) + " / " + scenes.length + " 行目：「" + scenes[i] + "」";
+          var styN = synthStyle();
+          var res = await worker.synthesize({
+            text: scenes[i], styleId: styN.styleId, styleWeight: styN.styleWeight,
+            speakerId: 0
+          });
+          var dec = parseWavMono(new Uint8Array(res.wavBytes));
+          if (dec.sampleRate !== sr){ sr = dec.sampleRate; padSamples = Math.round(NARR_PAD * sr); }
+          linePcm.push(dec.samples);
+          var sceneSamples = padSamples + dec.samples.length;
+          durations.push(sceneSamples / sr);
+          starts.push(acc); acc += durations[i];
+          totalSamples += sceneSamples;
+        }
+        /* 行順に連結した1本の音声（先頭パッド込み）を作る：映像タイムラインとサンプル単位で一致 */
+        var mix = new Float32Array(totalSamples);
+        var off = 0;
+        for (var j = 0; j < linePcm.length; j++){
+          mix.set(linePcm[j], off + padSamples);
+          off += padSamples + linePcm[j].length;
+        }
+        if (!actx) { try { actx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { actx = null; } }
+        var buffer = null;
+        if (actx){
+          buffer = actx.createBuffer(1, mix.length, sr);
+          buffer.copyToChannel(mix, 0);
+        }
+        state.narr = { sampleRate: sr, durations: durations, starts: starts, total: acc, mix: mix, buffer: buffer, lineCount: scenes.length };
+        state.mode = "narr";
+        state.t = 0;
+        syncModeUI();
+        /* タイミング表：行ごとに「映像の開始」と「発声の開始」を数値で並べる */
+        var html = '<div class="nt-head">タイミング確認（全行で 発声開始 − 映像開始 ＝ パッド ' + NARR_PAD.toFixed(2) + '秒）／ 合計 ' + acc.toFixed(2) + '秒</div>';
+        for (var k = 0; k < scenes.length; k++){
+          html += '<div class="nt-line">' + (k + 1) + ". 「" + escapeHtml(scenes[k]) + "」 映像 " + starts[k].toFixed(2) + "秒 → 発声 " + (starts[k] + NARR_PAD).toFixed(2) + "秒（音声 " + (durations[k] - NARR_PAD).toFixed(2) + "秒）</div>";
+        }
+        narrTable.innerHTML = html;
+        narrTable.classList.add("show");
+        narrStatus.textContent = "ナレーション完成：" + scenes.length + "行・合計 " + acc.toFixed(2) + "秒。" + SPEAKERS[tts.speakerId].label + (tts.modelName ? "（モデル：" + tts.modelName + "）" : "") + "／スタイル " + (styleSel.options[styleSel.selectedIndex] ? styleSel.options[styleSel.selectedIndex].textContent : tts.styleId) + "（強さ " + tts.styleWeight + "）。プレビューは声つきで再生されます。";
+        refreshCount();
+        if (state.playing) startNarrAudio(0);
+      } catch (err) {
+        narrStatus.innerHTML = '<span class="warn">合成に失敗しました</span>：' + escapeHtml(err && err.message ? err.message : String(err));
+      } finally {
+        tts.generating = false;
+        narrGenBtn.disabled = !tts.loaded;
+        ttsLoadBtn.disabled = false;
+      }
+    });
+
+    /* ============ ナレーションの同期再生（音声クロック＝映像クロック） ============ */
+    var actx = null, aSrc = null, aAnchor = null;
+    function narrClockActive(){
+      return state.mode === "narr" && state.narr && state.narr.buffer && actx && aAnchor && actx.state === "running";
+    }
+    function stopNarrAudio(){
+      stopBgmAudio();
+      if (aSrc){ try { aSrc.stop(); } catch (e) {} try { aSrc.disconnect(); } catch (e) {} aSrc = null; }
+      aAnchor = null;
+    }
+    function startNarrAudio(offset){
+      stopNarrAudio();
+      if (!state.narr || !state.narr.buffer) return;
+      if (!actx){ try { actx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { return; } }
+      if (!state.narr.buffer && actx){
+        state.narr.buffer = actx.createBuffer(1, state.narr.mix.length, state.narr.sampleRate);
+        state.narr.buffer.copyToChannel(state.narr.mix, 0);
+      }
+      if (actx.state === "suspended") actx.resume();
+      var total = state.narr.total;
+      var off = Math.max(0, Math.min(total - 0.01, offset || 0));
+      aSrc = actx.createBufferSource();
+      aSrc.buffer = state.narr.buffer;
+      aSrc.connect(actx.destination);
+      var when = actx.currentTime + 0.06;
+      aAnchor = { ctxTime: when, offset: off };
+      try { aSrc.start(when, off); } catch (e) { aAnchor = null; aSrc = null; }
+      if (aAnchor) startBgmAudio(off); /* BGMも同じ位置から同期して流す */
+    }
+
+    /* ============ BGM（Salamander Grand Piano） ============
+       BGMは Salamander Grand Piano（Alexander Holm、CC BY 3.0）のサンプルで
+       このアプリ用に作曲し、レンダリングした4曲のループ（GitHub Pages 版では Hugging Face の AiMu1215/amu-voice-studio-assets から取得）。
+       プレビュー再生も書き出し用ミックスも、端末内でデコードして使う（外部送信なし）。
+       NOVELのMP3保存には混ぜない（動画専用）。 */
+    var BGM_FILES = {
+      horror1: "https://huggingface.co/AiMu1215/amu-voice-studio-assets/resolve/main/bgm/bgm-horror1.mp3",
+      horror2: "https://huggingface.co/AiMu1215/amu-voice-studio-assets/resolve/main/bgm/bgm-horror2.mp3",
+      warm1: "https://huggingface.co/AiMu1215/amu-voice-studio-assets/resolve/main/bgm/bgm-warm1.mp3",
+      warm2: "https://huggingface.co/AiMu1215/amu-voice-studio-assets/resolve/main/bgm/bgm-warm2.mp3"
+    };
+    var bgmSel = document.getElementById("bgmSel");
+    var bgmVolRange = document.getElementById("bgmVolRange");
+    var bgmVolVal = document.getElementById("bgmVolVal");
+    var bgmPreviewBtn = document.getElementById("bgmPreviewBtn");
+    function bgmGainVal(){ return (state.bgmVol / 100) * 0.85; }
+    var bgmBufCache = {}, bgmMonoCache = {};
+    async function fetchBgmArrayBuffer(id){
+      var resp = await fetch(BGM_FILES[id]);
+      if (!resp.ok) throw new Error("BGMファイルを取得できませんでした（" + resp.status + "）");
+      return await resp.arrayBuffer();
+    }
+    /* 書き出しミックス用：指定レートのモノラルPCMとしてデコードする（ループ素材） */
+    async function getBgmMonoPcm(id, sr){
+      var key = id + "|" + sr;
+      if (bgmMonoCache[key]) return bgmMonoCache[key];
+      var ab = await fetchBgmArrayBuffer(id);
+      var pcm = null;
+      try {
+        var OC = window.OfflineAudioContext || window.webkitOfflineAudioContext;
+        var offCtx = new OC(1, Math.ceil(sr * 40), sr);
+        var buf = await offCtx.decodeAudioData(ab.slice(0));
+        pcm = new Float32Array(buf.getChannelData(0));
+      } catch (e) {
+        if (!actx){ try { actx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e2) { actx = null; } }
+        if (!actx) throw new Error("BGMをデコードできませんでした");
+        var buf2 = await actx.decodeAudioData(ab.slice(0));
+        var mono = new Float32Array(buf2.length);
+        for (var ch = 0; ch < buf2.numberOfChannels; ch++){
+          var cd = buf2.getChannelData(ch);
+          for (var i = 0; i < buf2.length; i++) mono[i] += cd[i] / buf2.numberOfChannels;
+        }
+        pcm = buf2.sampleRate === sr ? mono : resampleLinear(mono, buf2.sampleRate, sr);
+      }
+      bgmMonoCache[key] = pcm;
+      return pcm;
+    }
+    /* BGMを baseMix の下に敷いた新しいPCMを返す。動画の長さに合わせてループし、
+       頭は約1秒で入って末尾は約3秒かけて消える。最終ミックスのピークが
+       クリップしないよう、必要なら全体を少しだけ下げる */
+    function mixBgmInto(baseMix, sr, bgmPcm){
+      var out = new Float32Array(baseMix);
+      var g = bgmGainVal();
+      if (g <= 0 || !bgmPcm || !bgmPcm.length) return out;
+      var n = out.length;
+      var fadeIn = Math.min(Math.floor(sr * 1.0), Math.floor(n / 4));
+      var fadeOut = Math.min(Math.floor(sr * 3.0), Math.floor(n / 2));
+      for (var i = 0; i < n; i++){
+        var env = 1;
+        if (fadeIn > 0 && i < fadeIn){ var x = i / fadeIn; env = x * x * (3 - 2 * x); }
+        if (fadeOut > 0 && i >= n - fadeOut){ var y = (n - i) / fadeOut; env *= y * y * (3 - 2 * y); }
+        out[i] += bgmPcm[i % bgmPcm.length] * g * env;
+      }
+      var peak = 0;
+      for (var j = 0; j < n; j++){ var av = Math.abs(out[j]); if (av > peak) peak = av; }
+      if (peak > 0.98){
+        var sc = 0.98 / peak;
+        for (var k = 0; k < n; k++) out[k] *= sc;
+      }
+      return out;
+    }
+    /* プレビュー再生：ナレーションと同じ位置からループ再生する */
+    var bgmSrc = null, bgmGainNode = null, bgmPlaySeq = 0;
+    function stopBgmAudio(){
+      bgmPlaySeq++;
+      if (bgmSrc){ try { bgmSrc.stop(); } catch (e) {} try { bgmSrc.disconnect(); } catch (e) {} bgmSrc = null; }
+      if (bgmGainNode){ try { bgmGainNode.disconnect(); } catch (e) {} bgmGainNode = null; }
+    }
+    async function startBgmAudio(offset){
+      stopBgmAudio();
+      if (state.bgm === "none" || !BGM_FILES[state.bgm]) return;
+      var seq = bgmPlaySeq;
+      if (!actx){ try { actx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { return; } }
+      if (actx.state === "suspended") actx.resume();
+      var buf = bgmBufCache[state.bgm + "|" + actx.sampleRate] || null;
+      if (!buf){
+        try {
+          var ab2 = await fetchBgmArrayBuffer(state.bgm);
+          buf = await actx.decodeAudioData(ab2);
+          bgmBufCache[state.bgm + "|" + actx.sampleRate] = buf;
+        } catch (e) { return; }
+      }
+      if (seq !== bgmPlaySeq || !buf) return; /* 読み込み中に停止・変更されていたら鳴らさない */
+      bgmGainNode = actx.createGain();
+      bgmGainNode.gain.value = bgmGainVal();
+      bgmGainNode.connect(actx.destination);
+      bgmSrc = actx.createBufferSource();
+      bgmSrc.buffer = buf;
+      bgmSrc.loop = true;
+      bgmSrc.connect(bgmGainNode);
+      var off = ((offset || 0) % buf.duration + buf.duration) % buf.duration;
+      try { bgmSrc.start(actx.currentTime + 0.05, off); } catch (e) { bgmSrc = null; }
+    }
+    /* 試聴：選んだ曲の冒頭約14秒だけを単独で鳴らす */
+    var bgmPrevSrc = null, bgmPrevGain = null;
+    function stopBgmPreview(){
+      if (bgmPrevSrc){ try { bgmPrevSrc.stop(); } catch (e) {} try { bgmPrevSrc.disconnect(); } catch (e) {} bgmPrevSrc = null; }
+      if (bgmPrevGain){ try { bgmPrevGain.disconnect(); } catch (e) {} bgmPrevGain = null; }
+      bgmPreviewBtn.textContent = "BGMを試聴する（約14秒）";
+    }
+    bgmPreviewBtn.addEventListener("click", async function(){
+      if (bgmPrevSrc){ stopBgmPreview(); return; }
+      if (state.bgm === "none" || !BGM_FILES[state.bgm]){
+        bgmPreviewBtn.textContent = "まず曲を選んでください";
+        setTimeout(function(){ if (!bgmPrevSrc) bgmPreviewBtn.textContent = "BGMを試聴する（約14秒）"; }, 1600);
+        return;
+      }
+      if (!actx){ try { actx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { return; } }
+      if (actx.state === "suspended") actx.resume();
+      var buf = bgmBufCache[state.bgm + "|" + actx.sampleRate] || null;
+      if (!buf){
+        bgmPreviewBtn.textContent = "読み込み中…";
+        try {
+          var ab3 = await fetchBgmArrayBuffer(state.bgm);
+          buf = await actx.decodeAudioData(ab3);
+          bgmBufCache[state.bgm + "|" + actx.sampleRate] = buf;
+        } catch (e) { bgmPreviewBtn.textContent = "読み込めませんでした"; return; }
+      }
+      bgmPrevGain = actx.createGain();
+      bgmPrevGain.gain.value = Math.max(bgmGainVal(), 0.45);
+      bgmPrevGain.connect(actx.destination);
+      bgmPrevSrc = actx.createBufferSource();
+      bgmPrevSrc.buffer = buf;
+      bgmPrevSrc.connect(bgmPrevGain);
+      bgmPrevSrc.onended = function(){ stopBgmPreview(); };
+      try { bgmPrevSrc.start(actx.currentTime + 0.03, 0, 14); } catch (e) { stopBgmPreview(); return; }
+      bgmPreviewBtn.textContent = "試聴を止める";
+    });
+    bgmSel.addEventListener("change", function(){
+      state.bgm = bgmSel.value;
+      stopBgmPreview();
+      if (state.playing){
+        if (state.mode === "narr" && state.narr) startNarrAudio(state.t % Math.max(0.01, totalDur()));
+        else startBgmAudio(state.t);
+      }
+    });
+    bgmVolRange.addEventListener("input", function(){
+      state.bgmVol = parseInt(bgmVolRange.value, 10) || 0;
+      bgmVolVal.textContent = state.bgmVol;
+      if (bgmGainNode) bgmGainNode.gain.value = bgmGainVal();
+    });
+
+    /* ============ 書き出し ============ */
+    var exportBtn = document.getElementById("exportBtn");
+    var exportArea = document.getElementById("exportArea");
+    var exportBar = document.getElementById("exportBar");
+    var exportStatus = document.getElementById("exportStatus");
+    var cancelBtn = document.getElementById("cancelBtn");
+    var resultVideo = document.getElementById("resultVideo");
+    var downloadLink = document.getElementById("downloadLink");
+    var mp3Link = document.getElementById("mp3Link");
+    var codecNote = document.getElementById("codecNote");
+    var audioDiagBox = document.getElementById("audioDiagBox");
+    var audioDiagText = document.getElementById("audioDiagText");
+    /* 音声エンコードの試行結果（診断情報）を画面に残す。実機でしか再現しない
+       音声トラブルの切り分け材料で、スクショ1枚で次の一手が決められるようにする */
+    function renderAudioDiag(lines, openIt){
+      if (!audioDiagBox || !audioDiagText) return;
+      if (!lines || !lines.length){ audioDiagBox.style.display = "none"; return; }
+      audioDiagText.textContent = lines.join("\n");
+      audioDiagBox.style.display = "block";
+      audioDiagBox.open = !!openIt;
+    }
+    var FPS = 60;
+    var hasWebCodecs = typeof window.VideoEncoder !== "undefined" && typeof window.VideoFrame !== "undefined" && window.Mp4Muxer;
+
+    if (hasWebCodecs){
+      codecNote.textContent = "書き出しは再生を録画する方式ではなく、60fpsで1コマずつ描いてMP4に変換します。長い文章でもコマ落ちしません。";
+    } else {
+      exportBtn.textContent = "動画を書き出す（60fps・録画方式）";
+      codecNote.textContent = "このブラウザはMP4の直接変換（WebCodecs）に未対応のため、再生しながら録画して書き出します（形式はブラウザによりWebMまたはMP4になります）。Chrome / Edge / Safari の最新版ではMP4で直接書き出せます。";
+    }
+
+    cancelBtn.addEventListener("click", function(){ state.exportCancel = true; });
+
+    function setExportUI(running, pct, msg){
+      exportArea.classList.add("show");
+      exportBar.style.width = (pct || 0) + "%";
+      if (msg !== undefined) exportStatus.textContent = msg;
+      exportBtn.disabled = running;
+      cancelBtn.style.display = running ? "block" : "none";
+    }
+    /* 保存は <a download> 任せにしない。アプリ内ブラウザ（WKWebView）では
+       blob の download リンクが無反応になるため、ボタン押下で Web Share（ファイル共有）を
+       第一候補にし、使えない環境では従来のダウンロードへ落とす。どちらでも必ず
+       saveNote に結果を表示し、「押しても無反応」をなくす */
+    var lastVideoBlob = null, lastVideoName = "nurunuru.mp4", lastMp3Blob = null, prevVideoUrl = null, savingNow = false;
+    var saveNote = document.getElementById("saveNote");
+    function setSaveNote(msg){ if (saveNote) saveNote.textContent = msg || ""; }
+    function showResult(blob, filename){
+      lastVideoBlob = blob; lastVideoName = filename;
+      var url = URL.createObjectURL(blob);
+      if (prevVideoUrl){ var oldUrl = prevVideoUrl; setTimeout(function(){ URL.revokeObjectURL(oldUrl); }, 1500); }
+      prevVideoUrl = url;
+      resultVideo.src = url;
+      resultVideo.muted = false;
+      resultVideo.volume = 1;
+      resultVideo.style.display = "block";
+      try { resultVideo.load(); } catch (e) {}
+      downloadLink.style.display = "block";
+    }
+    async function saveBlob(blob, filename){
+      if (!blob){ setSaveNote("まだファイルがありません。先に書き出しを完了してください。"); return; }
+      if (savingNow) return;
+      savingNow = true;
+      try {
+        var file = null;
+        try { file = new File([blob], filename, { type: blob.type || "application/octet-stream" }); } catch (e) {}
+        if (file && navigator.share && navigator.canShare){
+          var shareData = { files: [file] };
+          var can = false;
+          try { can = navigator.canShare(shareData); } catch (e) {}
+          if (can){
+            try {
+              await navigator.share(shareData);
+              setSaveNote("共有シートを開きました。「ファイルに保存」などを選ぶと保存できます。");
+              return;
+            } catch (e) {
+              if (e && e.name === "AbortError"){ setSaveNote("保存はキャンセルされました。もう一度押すとやり直せます。"); return; }
+              /* 共有が失敗する環境では通常のダウンロードに切り替える */
+            }
+          }
+        }
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement("a");
+        a.href = url; a.download = filename; a.rel = "noopener"; a.style.display = "none";
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(function(){ try { a.remove(); } catch (e) {} }, 100);
+        setTimeout(function(){ URL.revokeObjectURL(url); }, 10000);
+        setSaveNote("ダウンロードを開始しました。始まらない場合は、上の動画プレイヤーを長押しして保存するか、もう一度ボタンを押してください。");
+      } finally {
+        savingNow = false;
+      }
+    }
+    downloadLink.addEventListener("click", function(){ saveBlob(lastVideoBlob, lastVideoName); });
+    mp3Link.addEventListener("click", function(){ saveBlob(lastMp3Blob, "narration.mp3"); });
+
+    exportBtn.addEventListener("click", function(){
+      resultVideo.style.display = "none";
+      downloadLink.style.display = "none";
+      renderAudioDiag(null, false);
+      mp3Link.style.display = "none";
+      mp3Link.textContent = "ナレーション音声（MP3）をダウンロード";
+      setSaveNote("");
+      state.exportCancel = false;
+      if (hasWebCodecs) exportMP4(); else exportWebM();
+    });
+
+    /* 線形補間の簡易リサンプル（AACが元レート非対応のとき用） */
+    function resampleLinear(input, fromSr, toSr){
+      if (fromSr === toSr) return input;
+      var outLen = Math.round(input.length * toSr / fromSr);
+      var out = new Float32Array(outLen);
+      var ratio = fromSr / toSr;
+      for (var i = 0; i < outLen; i++){
+        var pos = i * ratio, i0 = Math.floor(pos), i1 = Math.min(input.length - 1, i0 + 1), fr = pos - i0;
+        out[i] = input[i0] * (1 - fr) + input[i1] * fr;
+      }
+      return out;
+    }
+    /* ===== 音声エンコードの試行マトリクスとプローブ検査 =====
+       実機（WebKit）の AudioEncoder は、投入した AudioData の形式の解釈や
+       返す description（ASC）が環境で異なり、「エンコードは成功するのに
+       中身が無音」という壊れ方をしうることが実機で確認された。
+       そのため本番前に、声の大きい数秒だけを試しエンコードして
+       チャンク段階で実際にデコード検査し、音が返った組み合わせ
+       （投入形式 × サンプルレート × チャンネル数 × bitrateMode × ASC候補）
+       だけを本番に採用する。全試行の結果は診断情報として画面に残す */
+    function hexBytes(u8, n){
+      if (!u8) return "";
+      var s = "";
+      for (var i = 0; i < Math.min(n || 8, u8.length); i++) s += (u8[i] < 16 ? "0" : "") + u8[i].toString(16);
+      return s;
+    }
+    function attemptLabel(a){
+      return a.format + " / " + a.sampleRate + "Hz / " + a.channels + "ch" + (a.bitrateMode ? " / " + a.bitrateMode : "");
+    }
+    function buildAudioAttempts(narr){
+      var attempts = [], seenRate = {};
+      var rates = [];
+      [narr.sampleRate, 48000, 44100].forEach(function(r){ if (!seenRate[r]){ seenRate[r] = 1; rates.push(r); } });
+      var formats = ["s16", "f32-planar", "s16-planar", "f32", "s32-planar", "u8-planar"];
+      rates.forEach(function(sr){
+        formats.forEach(function(fmt){ attempts.push({ sampleRate: sr, format: fmt, channels: 1 }); });
+        attempts.push({ sampleRate: sr, format: "s16", channels: 1, bitrateMode: "variable" });
+        attempts.push({ sampleRate: sr, format: "s16", channels: 2 });
+        attempts.push({ sampleRate: sr, format: "f32-planar", channels: 2 });
+      });
+      return attempts;
+    }
+    /* プローブ用に「いちばん声の大きい約2.5秒」の区間を探す（無音区間で試すと判定できないため） */
+    function findProbeSegment(mixData, sampleRate){
+      var segLen = Math.min(mixData.length, Math.round(sampleRate * 2.5));
+      if (segLen <= 0) return { start: 0, len: 0, peak: 0 };
+      var win = Math.max(1, Math.round(sampleRate * 0.25));
+      var best = 0, bestPeak = -1;
+      for (var i = 0; i + win <= mixData.length; i += win){
+        var p = 0;
+        for (var j = i; j < i + win; j += 5){ var v = Math.abs(mixData[j]); if (v > p) p = v; }
+        if (p > bestPeak){ bestPeak = p; best = i; }
+      }
+      var start = Math.max(0, Math.min(best, mixData.length - segLen));
+      var seg = mixData.subarray(start, start + segLen);
+      return { start: start, len: segLen, peak: pcmPeak(seg) };
+    }
+    /* 1つの組み合わせをプローブ（短区間の試しエンコード＋チャンクのデコード検査）する。
+       通れば { cfg, asc, ascSource, peak, norm } を返し、ダメなら null。
+       どちらでも diag に1行残す：形式・設定・チャンク数・先頭バイト・ADTS有無・
+       description有無・ASC候補ごとの検査ピークが、次の一手の判断材料になる */
+    async function probeAudioAttempt(attempt, mixAtRate, diag, idx){
+      var label = "試行" + idx + " [" + attemptLabel(attempt) + "]";
+      var cfg = { codec: "mp4a.40.2", sampleRate: attempt.sampleRate, numberOfChannels: attempt.channels, bitrate: 128000 };
+      if (attempt.bitrateMode) cfg.bitrateMode = attempt.bitrateMode;
+      var sup = null;
+      try { sup = await AudioEncoder.isConfigSupported(cfg); } catch (e) {}
+      if (!sup || !sup.supported){ diag.push(label + " → この設定は未対応（isConfigSupported=false）"); return null; }
+      var useCfg = sup.config || cfg;
+      var seg = findProbeSegment(mixAtRate, attempt.sampleRate);
+      var segData = mixAtRate.subarray(seg.start, seg.start + seg.len);
+      var collected;
+      try {
+        collected = await encodePcmToAac(useCfg, segData, seg.len / attempt.sampleRate, attempt.format, attempt.channels);
+      } catch (e) {
+        diag.push(label + " → エンコード失敗：" + (e && e.message ? e.message : String(e)));
+        return null;
+      }
+      var norm = normalizeAacChunks(collected, attempt.sampleRate, attempt.channels, seg.len / attempt.sampleRate);
+      var head = label + " → チャンク" + norm.items.length + "個・先頭バイト " + (norm.firstHex || "?")
+        + "・ADTS" + (norm.wasAdts ? "有" : "無")
+        + "・description" + (norm.encDesc ? "有(" + hexBytes(norm.encDesc, 4) + ")" : "無")
+        + (norm.rebuilt ? "・時間軸再構築" : "");
+      /* ASC候補は「合成した正規形」と「エンコーダ返却description」の両方を実測で試す。
+         WebKitの返すdescriptionが壊れていると、フレームが正常でも検証も再生も無音になるため、
+         片方を盲信せず、実際に音が返った方を多重化にも使う */
+      var cands = [];
+      var synth = aacAscBytes(attempt.sampleRate, attempt.channels);
+      if (synth) cands.push({ asc: synth, src: "合成ASC" });
+      if (norm.encDesc){
+        var dup = false;
+        if (synth && norm.encDesc.length === synth.length){
+          dup = true;
+          for (var d = 0; d < synth.length; d++) if (norm.encDesc[d] !== synth[d]){ dup = false; break; }
+        }
+        if (!dup) cands.push({ asc: norm.encDesc, src: "エンコーダdescription" });
+      }
+      var peaksNote = [];
+      for (var ci = 0; ci < cands.length; ci++){
+        var ver = await verifyAacAudible(norm.items, cands[ci].asc, attempt.sampleRate, seg.peak, attempt.channels);
+        peaksNote.push(cands[ci].src + " ピーク " + (ver.checked ? ver.peak.toFixed(3) : "未確認"));
+        if (ver.checked && ver.ok){
+          diag.push(head + "・" + peaksNote.join(" / ") + "（元 " + seg.peak.toFixed(3) + "）→ 採用");
+          return { cfg: useCfg, asc: cands[ci].asc, ascSource: cands[ci].src, peak: ver.peak, srcPeak: seg.peak };
+        }
+        if (!ver.checked){
+          diag.push(head + " → この端末ではデコード検査ができないため判定保留");
+          return { cfg: useCfg, asc: cands[ci].asc, ascSource: cands[ci].src, peak: -1, srcPeak: seg.peak, unchecked: true };
+        }
+      }
+      diag.push(head + "・" + peaksNote.join(" / ") + "（元 " + seg.peak.toFixed(3) + "）→ 無音のため不採用");
+      return null;
+    }
+
+    /* ===== AAC 多重化の正規化と実デコード検証 =====
+       背景：AudioEncoder の挙動は環境で大きく異なる。Chrome系は生AAC＋description を
+       返すが、Safari系は ADTS ヘッダ付きフレームを返すことがあり、そのまま MP4 に
+       入れると「トラックは存在するのに Apple 系プレイヤーでデコードできず無音」に
+       なりうる。さらに実機WebKitでは、投入形式によってはエンコード自体が無音に
+       なること、返す description が信用できないことが確認された。
+       そのため (1) 本番前に短区間のプローブで「実際に音が返る組み合わせ」を選び、
+       (2) 出力は実バイト列を見て ADTS を除去し1フレーム単位に割り、時間軸が
+       崩れていれば再構築し、(3) ASC は合成形とエンコーダ返却の両候補をデコード
+       実測で選び、(4) 完成ファイルは時間配置（stts/mdhd）とデコードの両方で
+       検査する。構造検査だけで「入っています」とは言わない */
+    function adtsHeaderLen(u8){
+      if (!u8 || u8.length < 7) return 0;
+      if (u8[0] !== 0xFF || (u8[1] & 0xF0) !== 0xF0) return 0;
+      return (u8[1] & 0x01) ? 7 : 9;
+    }
+    function aacAscBytes(sampleRate, channels){
+      var table = [96000, 88200, 64000, 48000, 44100, 32000, 24000, 22050, 16000, 12000, 11025, 8000, 7350];
+      var fi = table.indexOf(sampleRate);
+      if (fi < 0) return null;
+      var bits = (2).toString(2).padStart(5, "0") + fi.toString(2).padStart(4, "0") + channels.toString(2).padStart(4, "0") + "000";
+      while (bits.length % 8) bits += "0";
+      var out = new Uint8Array(bits.length / 8);
+      for (var i = 0; i < out.length; i++) out[i] = parseInt(bits.slice(i * 8, i * 8 + 8), 2);
+      return out;
+    }
+    /* エンコーダ出力の正規化：
+       - ADTS付きならヘッダを除去し、1チャンクに複数フレーム入っていても
+         1フレーム＝1サンプルに割る（MP4のサンプルは1フレーム単位が前提）
+       - 時間軸はエンコーダの申告を鵜呑みにしない。合計尺や単調性を検査し、
+         崩れていれば「AAC 1フレーム＝1024サンプル」で等間隔に再構築する
+         （申告タイムスタンプが全て0等に壊れている環境でも、プレイヤーが
+         映像の時間範囲内で音を鳴らせる配置にするため）
+       - description（ASC）はここでは決め打ちしない。候補を呼び出し側が
+         デコード実測で選ぶため、encDesc は生のまま返す */
+    function normalizeAacChunks(collected, sampleRate, channels, expectedSec){
+      var items = [], wasAdts = false, encDesc = null, firstHex = "";
+      var frameDurUs = Math.round(1024 / sampleRate * 1e6);
+      for (var i = 0; i < collected.length; i++){
+        var chunk = collected[i].chunk, meta = collected[i].meta;
+        if (meta && meta.decoderConfig && meta.decoderConfig.description && !encDesc){
+          var d = meta.decoderConfig.description;
+          try { encDesc = d instanceof Uint8Array ? d.slice() : (d instanceof ArrayBuffer ? new Uint8Array(d) : new Uint8Array(d)); } catch (e) { encDesc = null; }
+        }
+        var data = new Uint8Array(chunk.byteLength);
+        chunk.copyTo(data);
+        if (i === 0) firstHex = hexBytes(data, 8);
+        var datas = [data];
+        var parts = [], pos = 0, stripped = false;
+        while (pos < data.length){
+          var hdr = adtsHeaderLen(data.subarray(pos));
+          if (!hdr) break;
+          var frameLen = ((data[pos + 3] & 0x3) << 11) | (data[pos + 4] << 3) | ((data[pos + 5] >> 5) & 0x7);
+          if (frameLen <= hdr || pos + frameLen > data.length) break;
+          parts.push(data.subarray(pos + hdr, pos + frameLen));
+          pos += frameLen; stripped = true;
+        }
+        if (stripped && pos === data.length && parts.length){
+          wasAdts = true;
+          datas = [];
+          for (var p = 0; p < parts.length; p++) datas.push(parts[p].slice());
+        }
+        var baseTs = (typeof chunk.timestamp === "number" && isFinite(chunk.timestamp)) ? chunk.timestamp : items.length * frameDurUs;
+        var chunkDur = (typeof chunk.duration === "number" && isFinite(chunk.duration) && chunk.duration > 0) ? chunk.duration : frameDurUs * datas.length;
+        for (var s = 0; s < datas.length; s++){
+          items.push({
+            data: datas[s], type: chunk.type,
+            timestamp: baseTs + Math.round(s * chunkDur / datas.length),
+            duration: Math.round(chunkDur / datas.length)
+          });
+        }
+      }
+      /* 時間軸の健全性チェック：サンプルの間隔が申告デュレーションと食い違う
+         （全タイムスタンプが0で間隔が潰れている等）／合計尺が投入PCMの尺と
+         大きく違う場合は再構築する。一定の開始オフセットは muxer 側で
+         ゼロに寄せられるため、ここでは「間隔」だけを見る */
+      var rebuilt = false;
+      var sumDur = 0, spacingOk = items.length > 0, cumTs = 0;
+      for (var j = 0; j < items.length; j++){
+        sumDur += items[j].duration;
+        if (!(items[j].duration > 0)) spacingOk = false;
+        if (j > 0){
+          cumTs += items[j - 1].duration;
+          if (Math.abs(items[j].timestamp - (items[0].timestamp + cumTs)) > frameDurUs) spacingOk = false;
+        }
+      }
+      var expectUs = expectedSec ? expectedSec * 1e6 : 0;
+      if (items.length && (!spacingOk || (expectUs > 0 && Math.abs(sumDur - expectUs) > expectUs * 0.15 + frameDurUs * 2))){
+        for (var k = 0; k < items.length; k++){
+          items[k].timestamp = Math.round(k * 1024 / sampleRate * 1e6);
+          items[k].duration = frameDurUs;
+        }
+        rebuilt = true;
+      }
+      var asc = null, ascSource = "";
+      if (!wasAdts && encDesc && encDesc.length >= 2){ asc = encDesc; ascSource = "encoder"; }
+      else { asc = aacAscBytes(sampleRate, channels); ascSource = wasAdts ? "synth(adts)" : "synth"; }
+      return { items: items, wasAdts: wasAdts, asc: asc, ascSource: ascSource, encDesc: encDesc, firstHex: firstHex, rebuilt: rebuilt };
+    }
+    function pcmPeak(samples){
+      var p = 0;
+      for (var i = 0; i < samples.length; i++){ var v = Math.abs(samples[i]); if (v > p) p = v; }
+      return p;
+    }
+    /* PCM（モノラルFloat32）を指定形式・チャンネル数の AudioData に詰める。
+       ステレオ指定時はモノラルを両chへ複製する（モノラル解釈を誤る環境への保険）。
+       planar は「chごとの塊」、非planar は「フレームごとに全ch」の並び */
+    function makeAudioData(format, mixData, aOff, n, sampleRate, channels){
+      channels = channels || 1;
+      var ts = Math.round(aOff / sampleRate * 1e6);
+      var planar = /-planar$/.test(format);
+      var base = format.replace(/-planar$/, "");
+      var totalLen = n * channels;
+      var buf, write;
+      if (base === "s16"){
+        buf = new Int16Array(totalLen);
+        write = function(idx, v){ buf[idx] = Math.round(Math.max(-1, Math.min(1, v)) * 32767); };
+      } else if (base === "s32"){
+        buf = new Int32Array(totalLen);
+        write = function(idx, v){ buf[idx] = Math.round(Math.max(-1, Math.min(1, v)) * 2147483647); };
+      } else if (base === "u8"){
+        buf = new Uint8Array(totalLen);
+        write = function(idx, v){ buf[idx] = Math.round((Math.max(-1, Math.min(1, v)) * 0.5 + 0.5) * 255); };
+      } else {
+        buf = new Float32Array(totalLen);
+        write = function(idx, v){ buf[idx] = v; };
+      }
+      for (var k = 0; k < n; k++){
+        var v = aOff + k < mixData.length ? mixData[aOff + k] : 0;
+        for (var c = 0; c < channels; c++)
+          write(planar ? c * n + k : k * channels + c, v);
+      }
+      return new AudioData({ format: format, sampleRate: sampleRate, numberOfFrames: n, numberOfChannels: channels, timestamp: ts, data: buf });
+    }
+    async function encodePcmToAac(audioCfg, mixData, total, format, channels){
+      var collected = [], aErr = null;
+      var aEnc = new AudioEncoder({
+        output: function(chunk, meta){ collected.push({ chunk: chunk, meta: meta }); },
+        error: function(e){ aErr = e; }
+      });
+      aEnc.configure(audioCfg);
+      var targetSamples = Math.round(total * audioCfg.sampleRate);
+      var CH = 2048;
+      for (var aOff = 0; aOff < targetSamples; aOff += CH){
+        if (aErr) throw aErr;
+        var n = Math.min(CH, targetSamples - aOff);
+        var adata = makeAudioData(format, mixData, aOff, n, audioCfg.sampleRate, channels);
+        aEnc.encode(adata);
+        adata.close();
+        while (aEnc.encodeQueueSize > 8) await new Promise(function(r){ setTimeout(r, 4); });
+      }
+      await aEnc.flush();
+      try { aEnc.close(); } catch (e) {}
+      if (aErr) throw aErr;
+      if (!collected.length) throw new Error("音声エンコーダから出力が得られませんでした");
+      return collected;
+    }
+    /* エンコード済みAACを実際にデコードし、ソースと見合う音量が返るかを確認する */
+    async function verifyAacAudible(items, asc, sampleRate, srcPeak, channels){
+      if (typeof window.AudioDecoder === "undefined") return { checked: false, ok: false, peak: 0, frames: 0 };
+      var peak = 0, frames = 0, err = null;
+      try {
+        var dec = new AudioDecoder({
+          output: function(adata){
+            try {
+              var len = adata.numberOfFrames, fmt = adata.format || "f32-planar", i, v, got = false;
+              try {
+                var f32 = new Float32Array(len);
+                adata.copyTo(f32, { planeIndex: 0, format: "f32-planar" });
+                for (i = 0; i < len; i++){ v = Math.abs(f32[i]); if (v > peak) peak = v; }
+                got = true;
+              } catch (e) {}
+              if (!got && fmt.indexOf("s16") === 0){
+                var i16 = new Int16Array(len);
+                adata.copyTo(i16, { planeIndex: 0, format: fmt });
+                for (i = 0; i < len; i++){ v = Math.abs(i16[i]) / 32768; if (v > peak) peak = v; }
+              } else if (!got && fmt.indexOf("f32") === 0){
+                var f = new Float32Array(len);
+                adata.copyTo(f, { planeIndex: 0, format: fmt });
+                for (i = 0; i < len; i++){ v = Math.abs(f[i]); if (v > peak) peak = v; }
+              }
+              frames += len;
+            } catch (e) {}
+            try { adata.close(); } catch (e) {}
+          },
+          error: function(e){ err = e; }
+        });
+        var dcfg = { codec: "mp4a.40.2", sampleRate: sampleRate, numberOfChannels: channels || 1 };
+        if (asc) dcfg.description = asc;
+        dec.configure(dcfg);
+        for (var i = 0; i < items.length; i++)
+          dec.decode(new EncodedAudioChunk({ type: items[i].type, timestamp: items[i].timestamp, duration: items[i].duration, data: items[i].data }));
+        await dec.flush();
+        try { dec.close(); } catch (e) {}
+      } catch (e) { err = e; }
+      if (err) return { checked: true, ok: false, peak: peak, frames: frames, error: err && err.message ? err.message : String(err) };
+      var ok = frames > 0 && (srcPeak < 0.02 || peak >= Math.max(0.015, srcPeak * 0.25));
+      return { checked: true, ok: ok, peak: peak, frames: frames };
+    }
+    /* 完成ファイルをプレイヤー相当の経路（decodeAudioData）でデコードできた場合のピーク。
+       デコード手段がない／失敗する環境では null（不明）としてチャンク側の検査を優先する */
+    async function containerAudioPeak(buf){
+      try {
+        var AC = window.OfflineAudioContext || window.webkitOfflineAudioContext;
+        if (!AC) return null;
+        var octx = new AC(1, 44100 * 2, 44100);
+        var decoded = await octx.decodeAudioData(buf.slice(0));
+        if (!decoded || !decoded.length) return null;
+        var ch = decoded.getChannelData(0), p = 0;
+        for (var i = 0; i < ch.length; i++){ var v = Math.abs(ch[i]); if (v > p) p = v; }
+        return p;
+      } catch (e) { return null; }
+    }
+
+    /* バイト列の中から ASCII 文字列を探す（先頭から limit バイトまで） */
+    function asciiIndexOf(u8, s, from, to){
+      var lim = Math.min(to, u8.length - s.length);
+      for (var i = from; i <= lim; i++){
+        var ok = true;
+        for (var j = 0; j < s.length; j++) if (u8[i + j] !== s.charCodeAt(j)){ ok = false; break; }
+        if (ok) return i;
+      }
+      return -1;
+    }
+    /* 書き出したMP4を「プレイヤー相当」に検査するためのボックスパーサ。
+       moov→trak→mdia を辿り、トラックごとに handler（vide/soun）・timescale・
+       mdhd の尺・stts（サンプルの時間配置）の合計尺・stsz のサンプル数を取る。
+       decodeAudioData 系の検査はコンテナの時間情報を無視して音声ストリームだけを
+       デコードできてしまうため、「サンプルは正常でも時間配置が壊れていて
+       プレイヤーでは映像の範囲内に音が来ない」ケースをこれで捕まえる */
+    function mp4TrackInfo(buf){
+      var u8 = buf instanceof Uint8Array ? buf : new Uint8Array(buf);
+      function u32(o){ return (u8[o] * 16777216 + ((u8[o + 1] << 16) | (u8[o + 2] << 8) | u8[o + 3])) >>> 0; }
+      function u64(o){ return u32(o) * 4294967296 + u32(o + 4); }
+      function typ(o){ return String.fromCharCode(u8[o], u8[o + 1], u8[o + 2], u8[o + 3]); }
+      function boxes(start, end){
+        var out = [], off = start;
+        while (off + 8 <= end){
+          var sz = u32(off), hdr = 8;
+          if (sz === 1){ sz = u64(off + 8); hdr = 16; }
+          else if (sz === 0) sz = end - off;
+          if (sz < hdr) break;
+          out.push({ type: typ(off + 4), c0: off + hdr, c1: Math.min(end, off + sz) });
+          off += sz;
+        }
+        return out;
+      }
+      function findBox(list, type){
+        for (var i = 0; i < list.length; i++) if (list[i].type === type) return list[i];
+        return null;
+      }
+      var result = { audio: null, video: null };
+      var moov = findBox(boxes(0, u8.length), "moov");
+      if (!moov) return result;
+      var traks = boxes(moov.c0, moov.c1).filter(function(b){ return b.type === "trak"; });
+      for (var t = 0; t < traks.length; t++){
+        var mdia = findBox(boxes(traks[t].c0, traks[t].c1), "mdia");
+        if (!mdia) continue;
+        var mdiaBoxes = boxes(mdia.c0, mdia.c1);
+        var hdlr = findBox(mdiaBoxes, "hdlr");
+        var mdhd = findBox(mdiaBoxes, "mdhd");
+        var minf = findBox(mdiaBoxes, "minf");
+        if (!hdlr || !mdhd) continue;
+        /* hdlr: version/flags(4) + pre_defined(4) の次が handler_type */
+        var handler = typ(hdlr.c0 + 8);
+        /* mdhd: version 0 は timescale=+12/duration=+16、version 1 は +20/+24 */
+        var ver = u8[mdhd.c0];
+        var timescale = 0, mdhdDur = 0;
+        if (ver === 1){ timescale = u32(mdhd.c0 + 20); mdhdDur = u64(mdhd.c0 + 24); }
+        else { timescale = u32(mdhd.c0 + 12); mdhdDur = u32(mdhd.c0 + 16); }
+        var samples = 0, sttsDur = 0;
+        if (minf){
+          var stbl = findBox(boxes(minf.c0, minf.c1), "stbl");
+          if (stbl){
+            var stblBoxes = boxes(stbl.c0, stbl.c1);
+            var stsz = findBox(stblBoxes, "stsz");
+            if (stsz) samples = u32(stsz.c0 + 8);
+            var stts = findBox(stblBoxes, "stts");
+            if (stts){
+              var cnt = u32(stts.c0 + 4), p = stts.c0 + 8;
+              for (var e = 0; e < cnt && p + 8 <= stts.c1; e++){ sttsDur += u32(p) * u32(p + 4); p += 8; }
+            }
+          }
+        }
+        var info = {
+          samples: samples, timescale: timescale,
+          mdhdSec: timescale ? mdhdDur / timescale : 0,
+          sttsSec: timescale ? sttsDur / timescale : 0
+        };
+        if (handler === "soun") result.audio = info;
+        else if (handler === "vide") result.video = info;
+      }
+      return result;
+    }
+    /* 従来インタフェース（録画フォールバック側の構造チェック用） */
+    function mp4AudioInfo(buf){
+      var t = mp4TrackInfo(buf);
+      return { found: !!(t.audio && t.audio.samples > 0), samples: t.audio ? t.audio.samples : 0 };
+    }
+    /* WebM の音声トラック有無：TrackEntry の CodecID 文字列（A_OPUS 等）を探す */
+    function webmHasAudio(buf){
+      var u8 = buf instanceof Uint8Array ? buf : new Uint8Array(buf);
+      var lim = Math.min(u8.length, 524288);
+      return asciiIndexOf(u8, "A_OPUS", 0, lim) >= 0 ||
+             asciiIndexOf(u8, "A_VORBIS", 0, lim) >= 0 ||
+             asciiIndexOf(u8, "A_AAC", 0, lim) >= 0;
+    }
+
+    async function pickCodec(W, H){
+      var candidates = ["avc1.64002a", "avc1.4d402a", "avc1.640028", "avc1.42001f"];
+      for (var i = 0; i < candidates.length; i++){
+        var cfg = { codec: candidates[i], width: W, height: H, bitrate: 8000000, framerate: FPS, latencyMode: "quality" };
+        try {
+          var sup = await VideoEncoder.isConfigSupported(cfg);
+          if (sup && sup.supported) return sup.config || cfg;
+        } catch (e) { /* 次の候補へ */ }
+      }
+      return null;
+    }
+
+    async function exportMP4(){
+      var wh = SIZES[state.size], W = wh[0], H = wh[1];
+      var total = totalDur();
+      var totalFrames = Math.round(total * FPS);
+      var narr = (state.mode === "narr" && state.narr) ? state.narr : null;
+      setExportUI(true, 0, "準備中…（全" + totalFrames + "コマ）");
+      try {
+        await document.fonts.ready;
+        var cfg = await pickCodec(W, H);
+        if (!cfg) throw new Error("この端末で使えるMP4エンコーダが見つかりませんでした。");
+        /* 音声：ナレーション同期モードなら AAC トラックを多重化する（総尺は映像と一致させる）。
+           実機WebKitでは「エンコードは成功するのに中身が無音」になる組み合わせがあるため、
+           まず声の大きい短区間だけを試しエンコードしてチャンク段階でデコード検査し（プローブ）、
+           実際に音が返った組み合わせ（形式×レート×ch×ASC候補）だけを本番に採用する。
+           全試行は診断情報として画面に残す。変換に失敗しても映像の書き出し自体は
+           完成させ、理由を完了表示で必ず伝える */
+        /* BGMミックス：エンコードと自己検査（プローブ／デコード確認）は、
+           ナレーション単体ではなく「BGMを混ぜた最終ミックスPCM」に対して行う。
+           元の narr.mix は書き換えず、ミックス結果は encNarr に持つ
+           （NOVELのMP3保存は従来どおりナレーションのみを使うため）。
+           ナレーションが無い場合でも、BGMだけの音声トラックを作る */
+        var encNarr = narr, bgmOnly = false;
+        var diag = [];
+        if (state.bgm !== "none" && BGM_FILES[state.bgm]){
+          try {
+            var bgmSrE = narr ? narr.sampleRate : 44100;
+            setExportUI(true, 0, "BGMを読み込んでいます…");
+            var bgmPcmE = await getBgmMonoPcm(state.bgm, bgmSrE);
+            diag.push("BGM: " + state.bgm + " を音量 " + state.bgmVol + "% でミックス");
+            if (narr) encNarr = { mix: mixBgmInto(narr.mix, narr.sampleRate, bgmPcmE), sampleRate: narr.sampleRate };
+            else {
+              encNarr = { mix: mixBgmInto(new Float32Array(Math.round(total * bgmSrE)), bgmSrE, bgmPcmE), sampleRate: bgmSrE };
+              bgmOnly = true;
+            }
+          } catch (bgmEx) {
+            diag.push("BGMの読み込みに失敗したため、BGMなしで続行: " + (bgmEx && bgmEx.message ? bgmEx.message : String(bgmEx)));
+            encNarr = narr;
+          }
+        }
+        var audioCfg = null, audioReason = "", audioItems = null, audioAsc = null;
+        var audioChannels = 1, audioHow = "";
+        var audioVerified = false, audioUnverified = false;
+        var narrPeak = encNarr ? pcmPeak(encNarr.mix) : 0;
+        if (encNarr){
+          diag.push("UA: " + (navigator.userAgent || "?"));
+          diag.push((bgmOnly ? "BGM音声" : "元音声") + ": ピーク " + narrPeak.toFixed(3) + " / " + encNarr.sampleRate + "Hz / 長さ " + total.toFixed(1) + "秒");
+          diag.push("AudioEncoder: " + (typeof window.AudioEncoder !== "undefined" ? "有" : "無") + " / AudioDecoder: " + (typeof window.AudioDecoder !== "undefined" ? "有" : "無"));
+          if (typeof window.AudioEncoder === "undefined"){
+            audioReason = "このブラウザ（アプリ内ブラウザ）では音声エンコーダ（AudioEncoder）が使えないため";
+          } else {
+            var attempts = buildAudioAttempts(encNarr);
+            var mixByRate = {};
+            var chosen = null;
+            for (var ai = 0; ai < attempts.length && !chosen; ai++){
+              var at = attempts[ai];
+              if (!mixByRate[at.sampleRate])
+                mixByRate[at.sampleRate] = at.sampleRate === encNarr.sampleRate ? encNarr.mix : resampleLinear(encNarr.mix, encNarr.sampleRate, at.sampleRate);
+              setExportUI(true, 1, "音声の形式を試しています（" + (ai + 1) + "通り目：" + attemptLabel(at) + "）…");
+              chosen = await probeAudioAttempt(at, mixByRate[at.sampleRate], diag, ai + 1);
+              if (chosen) chosen.attempt = at;
+            }
+            if (chosen){
+              audioCfg = chosen.cfg; audioChannels = chosen.attempt.channels;
+              audioHow = attemptLabel(chosen.attempt) + "・ASC=" + chosen.ascSource;
+              setExportUI(true, 2, "ナレーション音声をAACに変換中…（" + audioHow + "）");
+              try {
+                var mixFull = mixByRate[audioCfg.sampleRate];
+                var fullCollected = await encodePcmToAac(audioCfg, mixFull, total, chosen.attempt.format, audioChannels);
+                var fullNorm = normalizeAacChunks(fullCollected, audioCfg.sampleRate, audioChannels, total);
+                diag.push("本番 [" + audioHow + "] チャンク" + fullNorm.items.length + "個・ADTS" + (fullNorm.wasAdts ? "有" : "無") + (fullNorm.rebuilt ? "・時間軸再構築" : ""));
+                setExportUI(true, 3, "音声をデコード確認中…");
+                var fullSrcPeak = pcmPeak(mixFull);
+                var fullVer = await verifyAacAudible(fullNorm.items, chosen.asc, audioCfg.sampleRate, fullSrcPeak, audioChannels);
+                diag.push("本番検査: ピーク " + (fullVer.checked ? fullVer.peak.toFixed(3) : "未確認") + "（元 " + fullSrcPeak.toFixed(3) + "）");
+                audioItems = fullNorm.items; audioAsc = chosen.asc;
+                if (fullVer.checked && fullVer.ok) audioVerified = true;
+                else if (!fullVer.checked) audioUnverified = true;
+                else audioReason = "本番エンコード後のデコード確認で音声が検出できませんでした（ピーク " + fullVer.peak.toFixed(3) + " / 元 " + fullSrcPeak.toFixed(3) + "）";
+              } catch (fEx) {
+                audioItems = null;
+                audioReason = "音声のAAC変換でエラーが発生したため（" + (fEx && fEx.message ? fEx.message : String(fEx)) + "）";
+                diag.push("本番エンコード失敗: " + (fEx && fEx.message ? fEx.message : String(fEx)));
+              }
+            } else {
+              /* どの組み合わせでもプローブで音が返らなかった。既定形式で一応トラックは
+                 入れておき（完成ファイル検査が最終判定）、理由と全試行結果を明示する */
+              audioReason = "試した全ての音声形式で、エンコード直後の検査で音声が検出できませんでした";
+              try {
+                var fbCfg = { codec: "mp4a.40.2", sampleRate: encNarr.sampleRate, numberOfChannels: 1, bitrate: 128000 };
+                var fbSup = await AudioEncoder.isConfigSupported(fbCfg);
+                if (fbSup && fbSup.supported){
+                  var fbCollected = await encodePcmToAac(fbSup.config || fbCfg, encNarr.mix, total, "s16", 1);
+                  var fbNorm = normalizeAacChunks(fbCollected, encNarr.sampleRate, 1, total);
+                  audioItems = fbNorm.items; audioAsc = fbNorm.asc; audioCfg = fbSup.config || fbCfg; audioChannels = 1;
+                  audioHow = "s16 / " + encNarr.sampleRate + "Hz / 1ch（未検証のまま収録）";
+                  diag.push("参考: 既定形式(s16)で本番エンコードは実施（チャンク" + fbNorm.items.length + "個・ASC=" + fbNorm.ascSource + "）");
+                }
+              } catch (fbEx) { diag.push("既定形式のエンコードも失敗: " + (fbEx && fbEx.message ? fbEx.message : String(fbEx))); }
+            }
+          }
+        }
+        var cvs = document.createElement("canvas");
+        cvs.width = W; cvs.height = H;
+        var ctx = cvs.getContext("2d");
+        var muxerOpts = {
+          target: new Mp4Muxer.ArrayBufferTarget(),
+          video: { codec: "avc", width: W, height: H },
+          fastStart: "in-memory",
+          firstTimestampBehavior: "offset"
+        };
+        if (audioItems) muxerOpts.audio = { codec: "aac", numberOfChannels: audioChannels, sampleRate: audioCfg.sampleRate };
+        var muxer = new Mp4Muxer.Muxer(muxerOpts);
+        if (audioItems){
+          var aMeta = { decoderConfig: { codec: "mp4a.40.2", sampleRate: audioCfg.sampleRate, numberOfChannels: audioChannels } };
+          if (audioAsc) aMeta.decoderConfig.description = audioAsc;
+          for (var ac = 0; ac < audioItems.length; ac++) muxer.addAudioChunkRaw(audioItems[ac].data, audioItems[ac].type, audioItems[ac].timestamp, audioItems[ac].duration, aMeta);
+        }
+        var encError = null;
+        var encoder = new VideoEncoder({
+          output: function(chunk, meta){ muxer.addVideoChunk(chunk, meta); },
+          error: function(e){ encError = e; }
+        });
+        encoder.configure(cfg);
+        for (var i = 0; i < totalFrames; i++){
+          if (state.exportCancel){ try { encoder.close(); } catch (e) {} setExportUI(false, 0, "書き出しを中止しました。"); return; }
+          if (encError) throw encError;
+          drawFrame(ctx, W, H, i / FPS);
+          var frame = new VideoFrame(cvs, { timestamp: Math.round(i * 1e6 / FPS), duration: Math.round(1e6 / FPS) });
+          encoder.encode(frame, { keyFrame: i % 180 === 0 });
+          frame.close();
+          while (encoder.encodeQueueSize > 5) await new Promise(function(r){ setTimeout(r, 8); });
+          if (i % 6 === 0){
+            setExportUI(true, Math.round(i / totalFrames * 100), "描画＆変換中… " + i + " / " + totalFrames + " コマ");
+            await new Promise(function(r){ setTimeout(r, 0); });
+          }
+        }
+        setExportUI(true, 100, "仕上げ中…");
+        await encoder.flush();
+        encoder.close();
+        muxer.finalize();
+        var outBuf = muxer.target.buffer;
+        /* 最終確認（プレイヤー相当）：(a) ボックスを辿って音声トラックの実在と
+           サンプル数、(b) stts/mdhd から読む音声の時間配置が映像の尺と一致するか、
+           (c) 可能なら完成ファイル自体のデコード結果（無音でないか）の3点を見る。
+           decodeAudioData は時間情報を無視してデコードできるため (b) を欠くと
+           「サンプルは正常でも再生範囲内に音が無い」ファイルを通してしまう */
+        var audioEmbedded = false, audioUnverFinal = false;
+        if (encNarr && audioItems){
+          var tInfo = mp4TrackInfo(outBuf);
+          var aInfo = { found: !!(tInfo.audio && tInfo.audio.samples > 0), samples: tInfo.audio ? tInfo.audio.samples : 0 };
+          var timelineOk = !!(tInfo.audio && tInfo.video && tInfo.audio.samples > 0 &&
+            tInfo.audio.sttsSec >= tInfo.video.sttsSec * 0.8 && tInfo.audio.sttsSec <= tInfo.video.sttsSec * 1.25 &&
+            Math.abs(tInfo.audio.mdhdSec - tInfo.audio.sttsSec) <= Math.max(0.25, tInfo.audio.sttsSec * 0.1));
+          diag.push("完成ファイル: 音声サンプル " + aInfo.samples + "個・音声尺 " + (tInfo.audio ? tInfo.audio.sttsSec.toFixed(2) : "-") + "秒 / 映像尺 " + (tInfo.video ? tInfo.video.sttsSec.toFixed(2) : "-") + "秒・時間配置 " + (timelineOk ? "OK" : "不一致"));
+          var cPeak = await containerAudioPeak(outBuf);
+          diag.push("完成ファイルのデコード検査: ピーク " + (cPeak === null ? "未確認（この端末では検査不可）" : cPeak.toFixed(3)) + "（元 " + narrPeak.toFixed(3) + "）");
+          var containerSilent = (cPeak !== null && narrPeak >= 0.02 && cPeak < Math.max(0.015, narrPeak * 0.25));
+          var containerHealthy = (cPeak !== null && narrPeak >= 0.02 && !containerSilent);
+          if (!aInfo.found)
+            audioReason = "書き出したファイルを検査した結果、音声トラックが含まれていませんでした（多重化に失敗した可能性があります）";
+          else if (!timelineOk)
+            audioReason = "書き出したファイルの音声の時間配置が映像と一致しませんでした（音声尺 " + (tInfo.audio ? tInfo.audio.sttsSec.toFixed(2) : "?") + "秒 / 映像尺 " + (tInfo.video ? tInfo.video.sttsSec.toFixed(2) : "?") + "秒）";
+          else if (containerSilent)
+            audioReason = "書き出したファイルを実際にデコードした結果、音声が検出できませんでした";
+          audioEmbedded = aInfo.found && timelineOk && !containerSilent && (audioVerified || containerHealthy);
+          audioUnverFinal = aInfo.found && timelineOk && !containerSilent && !audioEmbedded && (audioUnverified || cPeak === null);
+          if (!aInfo.found || containerSilent || !timelineOk) audioEmbedded = false;
+          renderAudioDiag(diag, !audioEmbedded && !audioUnverFinal);
+        }
+        var blob = new Blob([outBuf], { type: "video/mp4" });
+        showResult(blob, "nurunuru.mp4");
+        var doneMsg = "完成！ " + total.toFixed(1) + "秒・" + totalFrames + "コマ・60fpsのMP4です（" + (blob.size / 1048576).toFixed(1) + " MB）。下のプレイヤーで確認して、ボタンから保存できます。";
+        var warnHead = "";
+        if (encNarr){
+          var mp3Ok = narr ? buildNarrationMp3(narr) : false;
+          if (!narr) mp3Link.style.display = "none";
+          var bgmNote = (state.bgm !== "none" && !bgmOnly) ? "BGMもナレーションの下に入っています。" : (bgmOnly ? "音声はBGMのみです。" : "");
+          if (audioEmbedded){
+            doneMsg = "音声トラック：入っています（チャンク検査と完成ファイルの検査で確認済み）。" + doneMsg + bgmNote + "音声はAACで収録し、総尺は映像と一致させています。音声形式：" + audioHow + "。";
+            if (narr) mp3Link.textContent = "ナレーション音声（MP3）をダウンロード";
+          } else if (audioUnverFinal){
+            doneMsg = "音声トラック：入っています（完成ファイルの構造と時間配置で確認済み。この端末ではデコード確認ができなかったため、聞こえない場合は下のMP3もご利用ください）。" + doneMsg + bgmNote + "音声形式：" + audioHow + "。";
+            if (narr) mp3Link.textContent = "ナレーション音声（MP3）をダウンロード";
+          } else {
+            warnHead = "音声トラック：正常な音声を確認できませんでした（" + audioReason + "）。この動画は無音の可能性があります。";
+            doneMsg = warnHead + doneMsg + (mp3Ok ? "ナレーション音声は、下のボタンからMP3ファイルとして保存できます。" : "");
+            mp3Link.textContent = "ナレーション音声（MP3）を保存する ※動画の音声は未確認です";
+          }
+          /* 音声トラック自体を作れなかったケースでも診断情報は必ず残す */
+          if (diag.length && audioDiagBox.style.display === "none") renderAudioDiag(diag, !!warnHead);
+        }
+        setExportUI(false, 100, doneMsg);
+        if (warnHead){
+          /* 音声を確認できなかった場合は成功メッセージに埋もれさせず、理由ごと警告色で先頭に明示する */
+          exportStatus.innerHTML = '<span class="warn">' + escapeHtml(warnHead) + "</span>" + escapeHtml(doneMsg.substring(warnHead.length));
+        }
+      } catch (err) {
+        setExportUI(false, 0, "書き出しに失敗しました：" + (err && err.message ? err.message : err));
+      }
+    }
+
+    /* WebCodecs非対応ブラウザ用：再生しながら録画するWebMフォールバック */
+    async function exportWebM(){
+      var total = totalDur();
+      setExportUI(true, 0, "再生しながら録画しています…（" + total.toFixed(1) + "秒かかります）");
+      var stream = stage.captureStream(FPS);
+      /* ナレーション同期モードなら、音声トラックも一緒に録画する。
+         BGMが選ばれていれば、録画する音声は「ナレーション＋BGM」のミックスにする
+         （元のナレーションPCMは書き換えない） */
+      var narr = (state.mode === "narr" && state.narr) ? state.narr : null;
+      var recNarr = narr;
+      if (state.bgm !== "none" && BGM_FILES[state.bgm]){
+        try {
+          setExportUI(true, 0, "BGMを読み込んでいます…");
+          if (narr){
+            var bgmPcmW = await getBgmMonoPcm(state.bgm, narr.sampleRate);
+            recNarr = { mix: mixBgmInto(narr.mix, narr.sampleRate, bgmPcmW), sampleRate: narr.sampleRate, buffer: null };
+          } else {
+            var bgmSrW = (actx && actx.sampleRate) || 44100;
+            var bgmPcmW2 = await getBgmMonoPcm(state.bgm, bgmSrW);
+            recNarr = { mix: mixBgmInto(new Float32Array(Math.round(total * bgmSrW)), bgmSrW, bgmPcmW2), sampleRate: bgmSrW, buffer: null };
+          }
+          setExportUI(true, 0, "再生しながら録画しています…（" + total.toFixed(1) + "秒かかります）");
+        } catch (bgmExW) { recNarr = narr; }
+      }
+      var aSrcNode = null;
+      if (recNarr){
+        stopNarrAudio();
+        if (!actx){ try { actx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { actx = null; } }
+        if (actx){
+          if (!recNarr.buffer){ recNarr.buffer = actx.createBuffer(1, recNarr.mix.length, recNarr.sampleRate); recNarr.buffer.copyToChannel(recNarr.mix, 0); }
+          if (actx.state === "suspended") actx.resume();
+          var aDest = actx.createMediaStreamDestination();
+          aSrcNode = actx.createBufferSource();
+          aSrcNode.buffer = recNarr.buffer;
+          aSrcNode.connect(aDest);
+          stream = new MediaStream(stream.getVideoTracks().concat(aDest.stream.getAudioTracks()));
+        }
+      }
+      var mime = "";
+      /* iOS Safari / アプリ内ブラウザの MediaRecorder は WebM ではなく MP4 を出すため、
+         WebM候補が全滅する環境でも MP4（音声コーデック付き）で録れるよう候補に加える */
+      var cand = recNarr
+        ? ["video/webm;codecs=vp9,opus", "video/webm;codecs=vp8,opus", "video/mp4;codecs=avc1.640028,mp4a.40.2", "video/mp4;codecs=avc1,mp4a.40.2", "video/mp4", "video/webm;codecs=vp9", "video/webm;codecs=vp8", "video/webm"]
+        : ["video/webm;codecs=vp9", "video/webm;codecs=vp8", "video/webm", "video/mp4;codecs=avc1.640028", "video/mp4"];
+      for (var i = 0; i < cand.length; i++){ if (window.MediaRecorder && MediaRecorder.isTypeSupported(cand[i])){ mime = cand[i]; break; } }
+      if (!mime){ setExportUI(false, 0, "このブラウザでは動画の書き出しに対応していませんでした。"); return; }
+      var isMp4Rec = mime.indexOf("video/mp4") === 0;
+      var rec = new MediaRecorder(stream, { mimeType: mime, videoBitsPerSecond: 8000000 });
+      var chunks = [];
+      rec.ondataavailable = function(e){ if (e.data.size) chunks.push(e.data); };
+      rec.onstop = async function(){
+        if (aSrcNode){ try { aSrcNode.stop(); } catch (e) {} aSrcNode = null; }
+        var blob = new Blob(chunks, { type: mime.split(";")[0] });
+        showResult(blob, isMp4Rec ? "nurunuru.mp4" : "nurunuru.webm");
+        var msg = "完成！ " + (isMp4Rec ? "MP4" : "WebM") + "形式で書き出しました（" + (blob.size / 1048576).toFixed(1) + " MB）。";
+        if (recNarr){
+          /* 自己検証：録画ファイル自身に音声トラックが入っているか（構造）に加え、
+             可能なら実際にデコードして無音でないかまで確認する */
+          var recBuf = null;
+          try { recBuf = await blob.arrayBuffer(); } catch (e) {}
+          var recHasAudio = false;
+          var recWarnHead = "";
+          if (recBuf) recHasAudio = isMp4Rec ? mp4AudioInfo(recBuf).found : webmHasAudio(recBuf);
+          var recPeak = recBuf ? await containerAudioPeak(recBuf) : null;
+          var recPeakNarr = pcmPeak(recNarr.mix);
+          var recSilent = (recPeak !== null && recPeakNarr >= 0.02 && recPeak < Math.max(0.015, recPeakNarr * 0.25));
+          var mp3OkRec = narr ? buildNarrationMp3(narr) : false;
+          if (!narr) mp3Link.style.display = "none";
+          if (recHasAudio && !recSilent){
+            msg = "音声トラック：入っています（書き出したファイルの" + (recPeak !== null ? "デコード確認" : "自己検査") + "で確認済み）。" + msg + (narr ? "ナレーション音声も一緒に入っています。" : "BGMが入っています。");
+            if (narr) mp3Link.textContent = "ナレーション音声（MP3）をダウンロード";
+          } else {
+            var noAudioWhy = recSilent
+              ? "録画したファイルを実際にデコードした結果、音声が検出できなかったため"
+              : !actx
+                ? "このブラウザでは録画用の音声チャンネル（AudioContext）が作れなかったため"
+                : (mime.indexOf("opus") < 0 && mime.indexOf("mp4a") < 0 && !isMp4Rec)
+                  ? "録画に使えた形式（" + mime + "）に音声コーデックが含まれていなかったため"
+                  : "録画したファイルを検査した結果、音声トラックが含まれていなかったため";
+            recWarnHead = "音声トラック：正常な音声を確認できませんでした（" + noAudioWhy + "）。この動画は無音の可能性があります。";
+            msg = recWarnHead + msg + (mp3OkRec ? "ナレーション音声は、下のボタンからMP3ファイルとして保存できます。" : "");
+            mp3Link.textContent = "ナレーション音声（MP3）を保存する ※動画の音声は未確認です";
+          }
+        }
+        setExportUI(false, 100, msg);
+        if (recWarnHead){
+          /* 無音の場合は成功メッセージに埋もれさせず、理由ごと警告色で先頭に明示する */
+          exportStatus.innerHTML = '<span class="warn">' + escapeHtml(recWarnHead) + "</span>" + escapeHtml(msg.substring(recWarnHead.length));
+        }
+        state.playing = true; setPlayUI();
+        if (narr && state.mode === "narr") startNarrAudio(state.t % Math.max(0.01, totalDur()));
+      };
+      var wasPlaying = state.playing;
+      state.playing = true; setPlayUI();
+      state.t = 0;
+      rec.start(200);
+      if (aSrcNode){ try { aSrcNode.start(); } catch (e) {} }
+      var started = performance.now();
+      var timer = setInterval(function(){
+        var el = (performance.now() - started) / 1000;
+        setExportUI(true, Math.min(100, el / total * 100), "再生しながら録画しています… " + el.toFixed(1) + " / " + total.toFixed(1) + "秒");
+        if (state.exportCancel){ clearInterval(timer); rec.stop(); setExportUI(false, 0, "書き出しを中止しました。"); state.playing = wasPlaying; setPlayUI(); }
+        else if (el >= total + 0.15){ clearInterval(timer); rec.stop(); }
+      }, 200);
+    }
+
+    /* フォントが読み込まれたらプレビューの文字幅を正しくする */
+    if (document.fonts && document.fonts.load){
+      document.fonts.load('600 40px "Shippori Mincho"');
+      document.fonts.load('800 40px "Shippori Mincho"');
+    }
+    setPlayUI();
+    </script>
+    <script>
+    "use strict";
+    /* ============ 2タブ切り替え（AMU TALK / AMU NOVEL） ============
+       TTSエンジン・モデル読み込み状態・話者/スタイル設定は両タブで共有する。
+       TALK側の操作は NOVEL側の既存コントロールへ転送し、状態表示は NOVEL側の
+       既存DOMからミラーする。二重読み込みや別実装は作らない。
+       タブを切り替えても生成済みナレーション・書き出し結果には触れない
+       （表示/非表示の切り替えのみ）。 */
+    var tabBtnTalk = document.getElementById("tabBtnTalk");
+    var tabBtnNovel = document.getElementById("tabBtnNovel");
+    var talkPanel = document.getElementById("talkPanel");
+    var novelPanel = document.getElementById("novelPanel");
+    function showTab(name){
+      var isTalk = name === "talk";
+      talkPanel.hidden = !isTalk;
+      novelPanel.style.display = isTalk ? "none" : "";
+      tabBtnTalk.setAttribute("aria-selected", isTalk ? "true" : "false");
+      tabBtnNovel.setAttribute("aria-selected", isTalk ? "false" : "true");
+      if (typeof syncTalkUI === "function") syncTalkUI();
+    }
+    tabBtnTalk.addEventListener("click", function(){ showTab("talk"); });
+    tabBtnNovel.addEventListener("click", function(){ showTab("novel"); });
+
+    /* ============ AMU TALK（TTSのみ） ============ */
+    var talkText = document.getElementById("talkText");
+    var talkCount = document.getElementById("talkCount");
+    var talkSpeakerSel = document.getElementById("talkSpeakerSel");
+    var talkStyleSel = document.getElementById("talkStyleSel");
+    var talkWeightRange = document.getElementById("talkWeightRange");
+    var talkWeightVal = document.getElementById("talkWeightVal");
+    var talkStyleNote = document.getElementById("talkStyleNote");
+    var talkLoadBtn = document.getElementById("talkLoadBtn");
+    var talkProg = document.getElementById("talkProg");
+    var talkProgBar = document.getElementById("talkProgBar");
+    var talkProgLabel = document.getElementById("talkProgLabel");
+    var talkLoadStatus = document.getElementById("talkLoadStatus");
+    var talkGenBtn = document.getElementById("talkGenBtn");
+    var talkStatus = document.getElementById("talkStatus");
+    var talkAudio = document.getElementById("talkAudio");
+    var talkMp3Btn = document.getElementById("talkMp3Btn");
+    var talkSaveNote = document.getElementById("talkSaveNote");
+    var talkState = { generating: false, mp3Blob: null, url: null };
+
+    function talkLines(){
+      var raw = talkText.value.split("\n"), out = [];
+      for (var i = 0; i < raw.length; i++){ var s = raw[i].trim(); if (s) out.push(s); }
+      return out;
+    }
+    function refreshTalkCount(){
+      var lines = talkLines();
+      talkCount.textContent = lines.length + "行・" + talkText.value.length + "文字";
+    }
+    talkText.addEventListener("input", refreshTalkCount);
+    refreshTalkCount();
+
+    function invalidateTalk(reason){
+      if (!talkState.mp3Blob) return;
+      talkStatus.textContent = reason + "、前に作った音声はそのまま聴けますが、新しい設定で作り直す場合は「音声を生成」を押し直してください。";
+    }
+
+    /* 話者：NOVEL側の話者セレクトへ転送（読み込み状態の扱いも既存ロジックに任せる） */
+    talkSpeakerSel.addEventListener("change", function(){
+      speakerSel.value = talkSpeakerSel.value;
+      speakerSel.dispatchEvent(new Event("change"));
+      invalidateTalk("話者が変わったため");
+      syncTalkUI();
+    });
+    /* スタイル：NOVEL側のセレクトへ転送 */
+    talkStyleSel.addEventListener("change", function(){
+      styleSel.value = talkStyleSel.value;
+      styleSel.dispatchEvent(new Event("change"));
+      invalidateTalk("スタイルが変わったため");
+    });
+    /* 強さ：NOVEL側のスライダーへ転送 */
+    talkWeightRange.addEventListener("input", function(){
+      talkWeightVal.textContent = talkWeightRange.value;
+      weightRange.value = talkWeightRange.value;
+      weightRange.dispatchEvent(new Event("input"));
+    });
+    talkWeightRange.addEventListener("change", function(){
+      weightRange.dispatchEvent(new Event("change"));
+      invalidateTalk("スタイルの強さが変わったため");
+    });
+
+    /* モデル読み込み：NOVEL側の読み込みボタンをそのまま使う（共有・二重読み込みなし）。
+       NOVEL側が隠れていても読み込み処理と進捗DOMは動き続け、表示は下のミラーで出す */
+    talkLoadBtn.addEventListener("click", function(){
+      if (tts.loading) return;
+      ttsLoadBtn.click();
+      syncTalkUI();
+    });
+
+    /* NOVEL側の状態 → TALK側表示のミラー */
+    function syncTalkUI(){
+      /* 話者（NOVEL側と共有のプルダウン。選択中の話者に追従する） */
+      if (document.activeElement !== talkSpeakerSel && talkSpeakerSel.value !== tts.speakerId)
+        talkSpeakerSel.value = tts.speakerId;
+      /* スタイル一覧（モデル読み込み後に NOVEL側が実モデルから作り直すため追従する） */
+      var sigA = "", sigB = "", oi;
+      for (oi = 0; oi < styleSel.options.length; oi++) sigA += styleSel.options[oi].value + ":" + styleSel.options[oi].textContent + "|";
+      for (oi = 0; oi < talkStyleSel.options.length; oi++) sigB += talkStyleSel.options[oi].value + ":" + talkStyleSel.options[oi].textContent + "|";
+      if (sigA !== sigB) talkStyleSel.innerHTML = styleSel.innerHTML;
+      if (document.activeElement !== talkStyleSel) talkStyleSel.value = styleSel.value;
+      /* 強さ */
+      if (document.activeElement !== talkWeightRange){
+        talkWeightRange.value = weightRange.value;
+        talkWeightVal.textContent = weightRange.value;
+      }
+      /* スタイル選択の可否（neutralOnly の話者は NOVEL 側に合わせて無効化＋注記表示） */
+      var spNow = SPEAKERS[tts.speakerId];
+      var neutralOnlyNow = !!(spNow && spNow.neutralOnly);
+      talkStyleSel.disabled = neutralOnlyNow;
+      talkWeightRange.disabled = neutralOnlyNow;
+      if (talkStyleNote){
+        talkStyleNote.style.display = neutralOnlyNow ? "" : "none";
+        if (neutralOnlyNow) talkStyleNote.textContent = "この声（" + (spNow.shortName || spNow.label) + "）はノーマル（Neutral）のみのモデルです。感情スタイルは選べません（雰囲気は文章の内容で寄ります）。";
+      }
+      /* 読み込み進捗 */
+      var progEl = document.getElementById("ttsProg");
+      var barEl = document.getElementById("ttsProgBar");
+      var labelEl = document.getElementById("ttsProgLabel");
+      if (progEl && progEl.classList.contains("show")) talkProg.classList.add("show"); else talkProg.classList.remove("show");
+      if (barEl) talkProgBar.style.width = barEl.style.width;
+      if (labelEl) talkProgLabel.textContent = labelEl.textContent;
+      talkLoadStatus.innerHTML = ttsStatus.innerHTML;
+      talkLoadBtn.disabled = tts.loading;
+      talkLoadBtn.textContent = tts.loaded ? "TTSモデル読み込み済み（読み込み直す）" : "TTSモデルを読み込む（約330MB）";
+      talkGenBtn.disabled = !tts.loaded || tts.generating || talkState.generating;
+    }
+    setInterval(syncTalkUI, 500);
+    syncTalkUI();
+
+    /* 音声生成：NOVELの行ごと合成と同一ワーカー・同一経路（worker.synthesize）を使い、
+       行ごとに合成して1つの音声に連結する（行間には0.3秒の間） */
+    talkGenBtn.addEventListener("click", async function(){
+      if (!tts.loaded || talkState.generating) return;
+      var lines = talkLines();
+      if (!lines.length){ talkStatus.textContent = "テキストを入力してください。"; return; }
+      talkState.generating = true;
+      talkGenBtn.disabled = true;
+      talkSaveNote.textContent = "";
+      try {
+        var worker = getTtsWorker();
+        var sr = tts.sampleRate;
+        var linePcm = [];
+        for (var i = 0; i < lines.length; i++){
+          talkStatus.textContent = "合成中… " + (i + 1) + " / " + lines.length + " 行目：「" + lines[i] + "」";
+          var styT = synthStyle();
+          var res = await worker.synthesize({
+            text: lines[i], styleId: styT.styleId, styleWeight: styT.styleWeight,
+            speakerId: 0
+          });
+          var dec = parseWavMono(new Uint8Array(res.wavBytes));
+          if (dec.sampleRate !== sr){ sr = dec.sampleRate; }
+          linePcm.push(dec.samples);
+        }
+        var gap = Math.round(0.3 * sr), totalSamples = 0, j;
+        for (j = 0; j < linePcm.length; j++) totalSamples += linePcm[j].length;
+        if (linePcm.length > 1) totalSamples += gap * (linePcm.length - 1);
+        var mix = new Float32Array(totalSamples), off = 0;
+        for (j = 0; j < linePcm.length; j++){
+          mix.set(linePcm[j], off);
+          off += linePcm[j].length + gap;
+        }
+        /* 再生も保存も同じMP3（端末内変換・lamejs）を使う */
+        var blob = encodeMp3Mono(mix, sr);
+        talkState.mp3Blob = blob;
+        if (talkState.url) URL.revokeObjectURL(talkState.url);
+        talkState.url = URL.createObjectURL(blob);
+        talkAudio.src = talkState.url;
+        talkAudio.style.display = "block";
+        try { talkAudio.load(); } catch (e) {}
+        talkMp3Btn.style.display = "block";
+        talkStatus.textContent = "音声ができました：" + lines.length + "行・約" + (mix.length / sr).toFixed(1) + "秒。" + SPEAKERS[tts.speakerId].label + (tts.modelName ? "（モデル：" + tts.modelName + "）" : "") + "／スタイル " + (talkStyleSel.options[talkStyleSel.selectedIndex] ? talkStyleSel.options[talkStyleSel.selectedIndex].textContent : tts.styleId) + "（強さ " + tts.styleWeight + "）。上のプレイヤーで聴いて、下のボタンでMP3を保存できます。";
+      } catch (err) {
+        talkStatus.innerHTML = '<span class="warn">合成に失敗しました</span>：' + escapeHtml(err && err.message ? err.message : String(err));
+      } finally {
+        talkState.generating = false;
+        syncTalkUI();
+      }
+    });
+
+    /* MP3保存：NOVEL側と同じ共有シート方式（saveBlob）をそのまま使う */
+    talkMp3Btn.addEventListener("click", async function(){
+      await saveBlob(talkState.mp3Blob, "amu-talk.mp3");
+      talkSaveNote.textContent = saveNote.textContent;
+    });
+    </script>
+  </body>
+</html>
