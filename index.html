@@ -396,7 +396,7 @@
           </div>
           <p class="note">ナレーション同期モードでは、プレビューも声つきで再生され、MP4書き出しにも音声トラックが入ります。</p>
 
-          <label class="flabel" style="margin-top:16px">BGM（ピアノ・動画用）</label>
+          <label class="flabel" style="margin-top:16px">BGM（動画用）</label>
           <div class="narrRow">
             <label for="bgmSel" style="font-weight:800; font-size:14px">曲</label>
             <select id="bgmSel">
@@ -407,10 +407,16 @@
               <option value="warm2">感動的な話 2 ― ゆったりした調べ</option>
             </select>
           </div>
+          <input type="file" id="bgmFileInput" accept=".mp3,audio/mpeg" hidden />
+          <div class="narrRow">
+            <button class="tbtn" id="bgmImportBtn" type="button">自分のMP3を取り込む</button>
+            <button class="tbtn" id="bgmClearBtn" type="button" style="display:none">取り込みを解除</button>
+          </div>
+          <p class="estatus" id="bgmImportStatus" aria-live="polite"></p>
           <label class="flabel" for="bgmVolRange">BGMの音量 <span class="val" id="bgmVolVal">30</span></label>
           <input class="durRange" type="range" id="bgmVolRange" min="0" max="100" step="1" value="30" />
           <button class="subBtn" id="bgmPreviewBtn" type="button" style="margin-top:10px">BGMを試聴する（約14秒）</button>
-          <p class="note">BGMは、グランドピアノ音源「Salamander Grand Piano」のサンプルで演奏した、このアプリ専用のオリジナル曲です。プレビューでは再生に同期して流れ、MP4書き出しではナレーションの下に小さくミックスされます（動画の長さに合わせてループし、末尾はフェードアウト）。ナレーションのMP3保存にはBGMは入りません。</p>
+          <p class="note">内蔵BGMは、グランドピアノ音源「Salamander Grand Piano」のサンプルで演奏した、このアプリ専用のオリジナル曲です。<strong>自分のMP3も取り込めます</strong>：取り込んだ曲は曲の選択肢に加わり、内蔵曲と同じようにプレビューでは再生に同期して流れ、MP4書き出しではナレーションの下に小さくミックスされます（動画の長さに合わせてループし、末尾はフェードアウト）。取り込んだファイルは端末の中で読み込むだけで、外部に送信することはありません。保持はページを開いている間だけです（閉じると消えます）。ナレーションのMP3保存にはBGMは入りません。</p>
         </div>
 
         <button class="primary" id="exportBtn" type="button">MP4を書き出す（60fps）</button>
@@ -2311,6 +2317,20 @@
       warm1: "https://huggingface.co/AiMu1215/amu-voice-studio-assets/resolve/main/bgm/bgm-warm1.mp3",
       warm2: "https://huggingface.co/AiMu1215/amu-voice-studio-assets/resolve/main/bgm/bgm-warm2.mp3"
     };
+    /* 取り込んだMP3：選択肢の値 "custom" として内蔵曲と同じ経路で扱う。
+       保持はセッション内メモリのみ（ページを閉じたら消える）。外部送信はしない */
+    var CUSTOM_BGM_ID = "custom";
+    var customBgm = null; /* {name, arrayBuffer, buffer} */
+    function hasBgm(id){
+      id = id || state.bgm;
+      if (!id || id === "none") return false;
+      if (id === CUSTOM_BGM_ID) return !!customBgm;
+      return !!BGM_FILES[id];
+    }
+    function bgmLabel(id){
+      if (id === CUSTOM_BGM_ID && customBgm) return "取り込み：" + customBgm.name;
+      return id;
+    }
     var bgmSel = document.getElementById("bgmSel");
     var bgmVolRange = document.getElementById("bgmVolRange");
     var bgmVolVal = document.getElementById("bgmVolVal");
@@ -2318,6 +2338,10 @@
     function bgmGainVal(){ return (state.bgmVol / 100) * 0.85; }
     var bgmBufCache = {}, bgmMonoCache = {};
     async function fetchBgmArrayBuffer(id){
+      if (id === CUSTOM_BGM_ID){
+        if (!customBgm) throw new Error("取り込んだMP3が見つかりませんでした");
+        return customBgm.arrayBuffer.slice(0); /* decodeで元が切り離されても使い直せるようコピーを渡す */
+      }
       var resp = await fetch(BGM_FILES[id]);
       if (!resp.ok) throw new Error("BGMファイルを取得できませんでした（" + resp.status + "）");
       return await resp.arrayBuffer();
@@ -2326,6 +2350,18 @@
     async function getBgmMonoPcm(id, sr){
       var key = id + "|" + sr;
       if (bgmMonoCache[key]) return bgmMonoCache[key];
+      /* 取り込みMP3は取り込み時にデコード済みのバッファから作る（全チャンネルを混ぜてモノラル化） */
+      if (id === CUSTOM_BGM_ID && customBgm && customBgm.buffer){
+        var bufC = customBgm.buffer;
+        var monoC = new Float32Array(bufC.length);
+        for (var chC = 0; chC < bufC.numberOfChannels; chC++){
+          var cdC = bufC.getChannelData(chC);
+          for (var iC = 0; iC < bufC.length; iC++) monoC[iC] += cdC[iC] / bufC.numberOfChannels;
+        }
+        var pcmC = bufC.sampleRate === sr ? monoC : resampleLinear(monoC, bufC.sampleRate, sr);
+        bgmMonoCache[key] = pcmC;
+        return pcmC;
+      }
       var ab = await fetchBgmArrayBuffer(id);
       var pcm = null;
       try {
@@ -2380,7 +2416,7 @@
     }
     async function startBgmAudio(offset){
       stopBgmAudio();
-      if (state.bgm === "none" || !BGM_FILES[state.bgm]) return;
+      if (state.bgm === "none" || !hasBgm()) return;
       var seq = bgmPlaySeq;
       if (!actx){ try { actx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { return; } }
       if (actx.state === "suspended") actx.resume();
@@ -2412,7 +2448,7 @@
     }
     bgmPreviewBtn.addEventListener("click", async function(){
       if (bgmPrevSrc){ stopBgmPreview(); return; }
-      if (state.bgm === "none" || !BGM_FILES[state.bgm]){
+      if (!hasBgm()){
         bgmPreviewBtn.textContent = "まず曲を選んでください";
         setTimeout(function(){ if (!bgmPrevSrc) bgmPreviewBtn.textContent = "BGMを試聴する（約14秒）"; }, 1600);
         return;
@@ -2450,6 +2486,93 @@
       state.bgmVol = parseInt(bgmVolRange.value, 10) || 0;
       bgmVolVal.textContent = state.bgmVol;
       if (bgmGainNode) bgmGainNode.gain.value = bgmGainVal();
+    });
+
+    /* ============ 自分のMP3の取り込み ============
+       端末内のファイルを decodeAudioData で読み込むだけ（外部送信・アップロードなし）。
+       取り込んだ曲は選択肢 "custom" として内蔵曲と同じ経路（プレビュー同期再生・
+       音量・MP4ミックス）で使える。保持はセッション内メモリのみ */
+    var bgmFileInput = document.getElementById("bgmFileInput");
+    var bgmImportBtn = document.getElementById("bgmImportBtn");
+    var bgmClearBtn = document.getElementById("bgmClearBtn");
+    var bgmImportStatus = document.getElementById("bgmImportStatus");
+    function setBgmImportStatus(msg, isError){
+      bgmImportStatus.textContent = msg;
+      bgmImportStatus.classList.toggle("warn", !!isError);
+    }
+    function clearCustomBgmCaches(){
+      for (var k1 in bgmBufCache){ if (k1.indexOf(CUSTOM_BGM_ID + "|") === 0) delete bgmBufCache[k1]; }
+      for (var k2 in bgmMonoCache){ if (k2.indexOf(CUSTOM_BGM_ID + "|") === 0) delete bgmMonoCache[k2]; }
+    }
+    function readFileArrayBuffer(file){
+      if (file.arrayBuffer) return file.arrayBuffer();
+      return new Promise(function(res, rej){
+        var fr = new FileReader();
+        fr.onload = function(){ res(fr.result); };
+        fr.onerror = function(){ rej(fr.error || new Error("ファイルを読み込めませんでした")); };
+        fr.readAsArrayBuffer(file);
+      });
+    }
+    function fmtDur(sec){
+      sec = Math.round(sec);
+      if (sec < 60) return "約" + sec + "秒";
+      return "約" + Math.floor(sec / 60) + "分" + (sec % 60) + "秒";
+    }
+    /* BGMの選択が変わった時と同じ再同期（bgmSelのchangeハンドラと同内容） */
+    function resyncBgmPlayback(){
+      stopBgmPreview();
+      if (state.playing){
+        if (state.mode === "narr" && state.narr) startNarrAudio(state.t % Math.max(0.01, totalDur()));
+        else startBgmAudio(state.t);
+      }
+    }
+    bgmImportBtn.addEventListener("click", function(){ bgmFileInput.click(); });
+    bgmFileInput.addEventListener("change", async function(){
+      var file = bgmFileInput.files && bgmFileInput.files[0];
+      bgmFileInput.value = ""; /* 同じファイルを選び直せるようにリセット */
+      if (!file) return;
+      var fname = file.name || "取り込んだMP3";
+      setBgmImportStatus("「" + fname + "」を読み込んでいます…", false);
+      try {
+        var ab = await readFileArrayBuffer(file);
+        if (!ab || !ab.byteLength) throw new Error("ファイルの中身が空でした");
+        if (!actx){ try { actx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { actx = null; } }
+        if (!actx) throw new Error("このブラウザでは音声を再生・解析できませんでした");
+        if (actx.state === "suspended") actx.resume();
+        var buf = null;
+        try { buf = await actx.decodeAudioData(ab.slice(0)); }
+        catch (decErr) { throw new Error("MP3としてデコードできませんでした（ファイルが壊れているか、MP3形式ではない可能性があります）"); }
+        if (!buf || !buf.duration || !buf.length) throw new Error("音声データを取り出せませんでした");
+        /* 成功：前の取り込みと差し替えて、選択肢に登録して即選択する */
+        clearCustomBgmCaches();
+        customBgm = { name: fname, arrayBuffer: ab, buffer: buf };
+        bgmBufCache[CUSTOM_BGM_ID + "|" + buf.sampleRate] = buf;
+        var opt = bgmSel.querySelector('option[value="' + CUSTOM_BGM_ID + '"]');
+        if (!opt){ opt = document.createElement("option"); opt.value = CUSTOM_BGM_ID; bgmSel.appendChild(opt); }
+        opt.textContent = "取り込み：" + fname;
+        bgmSel.value = CUSTOM_BGM_ID;
+        state.bgm = CUSTOM_BGM_ID;
+        bgmClearBtn.style.display = "";
+        setBgmImportStatus("取り込みました：「" + fname + "」（" + fmtDur(buf.duration) + "）。曲として選択済みです。プレビューとMP4書き出しで、内蔵曲と同じように使えます。ページを閉じると取り込みは消えます。", false);
+        resyncBgmPlayback();
+      } catch (err) {
+        setBgmImportStatus("取り込めませんでした：「" + fname + "」― " + (err && err.message ? err.message : String(err)) + "。MP3ファイル（.mp3）かどうかを確認して、別のファイルで試してください。ファイルは端末の外に送信されていません。", true);
+      }
+    });
+    bgmClearBtn.addEventListener("click", function(){
+      var wasSelected = state.bgm === CUSTOM_BGM_ID;
+      customBgm = null;
+      clearCustomBgmCaches();
+      var opt = bgmSel.querySelector('option[value="' + CUSTOM_BGM_ID + '"]');
+      if (opt) opt.remove();
+      bgmClearBtn.style.display = "none";
+      if (wasSelected){
+        bgmSel.value = "none";
+        state.bgm = "none";
+        stopBgmAudio();
+      }
+      stopBgmPreview();
+      setBgmImportStatus("取り込みを解除しました。", false);
     });
 
     /* ============ 書き出し ============ */
@@ -3016,12 +3139,12 @@
            ナレーションが無い場合でも、BGMだけの音声トラックを作る */
         var encNarr = narr, bgmOnly = false;
         var diag = [];
-        if (state.bgm !== "none" && BGM_FILES[state.bgm]){
+        if (hasBgm()){
           try {
             var bgmSrE = narr ? narr.sampleRate : 44100;
             setExportUI(true, 0, "BGMを読み込んでいます…");
             var bgmPcmE = await getBgmMonoPcm(state.bgm, bgmSrE);
-            diag.push("BGM: " + state.bgm + " を音量 " + state.bgmVol + "% でミックス");
+            diag.push("BGM: " + bgmLabel(state.bgm) + " を音量 " + state.bgmVol + "% でミックス");
             if (narr) encNarr = { mix: mixBgmInto(narr.mix, narr.sampleRate, bgmPcmE), sampleRate: narr.sampleRate };
             else {
               encNarr = { mix: mixBgmInto(new Float32Array(Math.round(total * bgmSrE)), bgmSrE, bgmPcmE), sampleRate: bgmSrE };
@@ -3169,7 +3292,7 @@
         if (encNarr){
           var mp3Ok = narr ? buildNarrationMp3(narr) : false;
           if (!narr) mp3Link.style.display = "none";
-          var bgmNote = (state.bgm !== "none" && !bgmOnly) ? "BGMもナレーションの下に入っています。" : (bgmOnly ? "音声はBGMのみです。" : "");
+          var bgmNote = (hasBgm() && !bgmOnly) ? "BGMもナレーションの下に入っています。" : (bgmOnly ? "音声はBGMのみです。" : "");
           if (audioEmbedded){
             doneMsg = "音声トラック：入っています（チャンク検査と完成ファイルの検査で確認済み）。" + doneMsg + bgmNote + "音声はAACで収録し、総尺は映像と一致させています。音声形式：" + audioHow + "。";
             if (narr) mp3Link.textContent = "ナレーション音声（MP3）をダウンロード";
@@ -3204,7 +3327,7 @@
          （元のナレーションPCMは書き換えない） */
       var narr = (state.mode === "narr" && state.narr) ? state.narr : null;
       var recNarr = narr;
-      if (state.bgm !== "none" && BGM_FILES[state.bgm]){
+      if (hasBgm()){
         try {
           setExportUI(true, 0, "BGMを読み込んでいます…");
           if (narr){
