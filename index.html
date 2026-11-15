@@ -239,11 +239,13 @@
         <textarea id="talkText" rows="5">こんにちは。今日はいい天気ですね。</textarea>
         <div class="rowbetween">
           <span class="count" id="talkCount"></span>
+          <button class="ghost" id="talkClearBtn" type="button">文章をクリア</button>
         </div>
 
         <label class="flabel" for="talkSpeakerSel" style="margin-top:14px">話者</label>
         <select id="talkSpeakerSel" class="speakerSel">
           <option value="f2">女性（F2）</option>
+          <option value="f1">女性（F1）</option>
           <option value="yunomaru">男性（東部湯の丸）</option>
           <option value="tokujiro">男性（さくら徳次郎）</option>
           <option value="aoba">女性（横浜青葉）</option>
@@ -280,7 +282,7 @@
 
         <div class="credits">
           <strong>クレジット・ライセンス</strong><br>
-          音声モデル：女性は、JVNVコーパスに基づく Style-BERT-VITS2 公式デフォルトモデル「jvnv-F2-jp」（litagin）をONNX化し int8 量子化した派生物 ― <strong>CC BY-SA 4.0</strong>（出典：JVNV Corpus / litagin）。男性「東部湯の丸」「さくら徳次郎」と女性「横浜青葉」は（出典：itoolsjp / Style-Bert-VITS2-Voice-Assets）をONNX化し int8 量子化した派生物で、その利用規約に従って使用しています。韻律推定：ku-nlp/deberta-v2-large-japanese-char-wwm（CC BY-SA 4.0）の量子化版。辞書：naist-jdic（BSD-3-Clause）。実行ライブラリ：@hdae/sbv2-web（MIT）、onnxruntime-web（MIT）。MP3変換：lamejs（LAMEのJavaScript移植、LGPL）。音声合成はすべてこの端末内で実行され、文章が外部に送信されることはありません。
+          音声モデル：女性は、JVNVコーパスに基づく Style-BERT-VITS2 公式デフォルトモデル「jvnv-F2-jp」と「jvnv-F1-jp」（litagin）をONNX化し int8 量子化した派生物 ― <strong>CC BY-SA 4.0</strong>（出典：JVNV Corpus / litagin）。男性「東部湯の丸」「さくら徳次郎」と女性「横浜青葉」は（出典：itoolsjp / Style-Bert-VITS2-Voice-Assets）をONNX化し int8 量子化した派生物で、その利用規約に従って使用しています。韻律推定：ku-nlp/deberta-v2-large-japanese-char-wwm（CC BY-SA 4.0）の量子化版。辞書：naist-jdic（BSD-3-Clause）。実行ライブラリ：@hdae/sbv2-web（MIT）、onnxruntime-web（MIT）。MP3変換：lamejs（LAMEのJavaScript移植、LGPL）。音声合成はすべてこの端末内で実行され、文章が外部に送信されることはありません。
         </div>
       </section>
     </div>
@@ -316,6 +318,7 @@
 それでも、ここにいる。</textarea>
         <div class="rowbetween">
           <span class="count" id="sceneCount"></span>
+          <button class="ghost" id="clearBtn" type="button">文章をクリア</button>
           <button class="ghost" id="sampleBtn" type="button">サンプルに戻す</button>
         </div>
         <p class="note" style="margin-top:2px">原稿カメラでは、「二月三日」のような日付の行は章扉に、漢字1〜2文字だけの行は画面いっぱいの巨大文字カットになります。</p>
@@ -350,6 +353,7 @@
           <label class="flabel" for="speakerSel" style="margin-top:14px">話者</label>
           <select id="speakerSel" class="speakerSel">
             <option value="f2">女性（F2）</option>
+            <option value="f1">女性（F1）</option>
             <option value="yunomaru">男性（東部湯の丸）</option>
             <option value="tokujiro">男性（さくら徳次郎）</option>
             <option value="aoba">女性（横浜青葉）</option>
@@ -437,7 +441,7 @@
 
         <div class="credits">
           <strong>クレジット・ライセンス</strong><br>
-          音声モデル：女性は、JVNVコーパスに基づく Style-BERT-VITS2 公式デフォルトモデル「jvnv-F2-jp」（litagin）をONNX化し int8 量子化した派生物 ― <strong>CC BY-SA 4.0</strong>（出典：JVNV Corpus / litagin）。男性「東部湯の丸」「さくら徳次郎」と女性「横浜青葉」は（出典：itoolsjp / Style-Bert-VITS2-Voice-Assets）をONNX化し int8 量子化した派生物で、その利用規約に従って使用しています。韻律推定：ku-nlp/deberta-v2-large-japanese-char-wwm（CC BY-SA 4.0）の量子化版。辞書：naist-jdic（BSD-3-Clause）。実行ライブラリ：@hdae/sbv2-web（MIT）、onnxruntime-web（MIT）。MP3変換：lamejs（LAMEのJavaScript移植、LGPL）。音声合成はすべてこの端末内で実行され、文章が外部に送信されることはありません。<br>
+          音声モデル：女性は、JVNVコーパスに基づく Style-BERT-VITS2 公式デフォルトモデル「jvnv-F2-jp」と「jvnv-F1-jp」（litagin）をONNX化し int8 量子化した派生物 ― <strong>CC BY-SA 4.0</strong>（出典：JVNV Corpus / litagin）。男性「東部湯の丸」「さくら徳次郎」と女性「横浜青葉」は（出典：itoolsjp / Style-Bert-VITS2-Voice-Assets）をONNX化し int8 量子化した派生物で、その利用規約に従って使用しています。韻律推定：ku-nlp/deberta-v2-large-japanese-char-wwm（CC BY-SA 4.0）の量子化版。辞書：naist-jdic（BSD-3-Clause）。実行ライブラリ：@hdae/sbv2-web（MIT）、onnxruntime-web（MIT）。MP3変換：lamejs（LAMEのJavaScript移植、LGPL）。音声合成はすべてこの端末内で実行され、文章が外部に送信されることはありません。<br>
           BGM音源：Salamander Grand Piano（Alexander Holm）― <strong>CC BY 3.0</strong>。この音源のサンプルで演奏したオリジナル曲を、アプリ内に同梱しています。
         </div>
       </section>
@@ -970,6 +974,9 @@
     document.getElementById("sampleBtn").addEventListener("click", function(){
       textInput.value = SAMPLE; state.t = 0; invalidateNarr("文章が変わったため"); refreshCount();
     });
+    document.getElementById("clearBtn").addEventListener("click", function(){
+      textInput.value = ""; textInput.dispatchEvent(new Event("input", { bubbles: true }));
+    });
 
     function segWire(id, attr, apply){
       var box = document.getElementById(id);
@@ -1036,9 +1043,14 @@
        合成する（湯の丸は素で約147〜156Hz のため不要）。
        さくら徳次郎（75,648,454 bytes）と横浜青葉（75,648,460 bytes）も
        同じ itoolsjp 配布の話者で、どちらも Neutral のみ（neutralOnly）。
-       サイズ・SHA-256 は配信実ファイルの実測値（HF の LFS オブジェクト名とも一致） */
+       サイズ・SHA-256 は配信実ファイルの実測値（HF の LFS オブジェクト名とも一致）。
+       5人目として追加した F1（75,657,068 bytes）は F2 と同じ JVNV の
+       JP-Extra モデルで、neutralOnly ではなく感情7スタイル＋強さ指定が
+       そのまま使える。サイズ・SHA-256 は配信実ファイルの実測値
+       （モデル内蔵マニフェストの記録名は「jvnv-F1-jp」） */
     var SPEAKERS = {
       f2: { label: "女性（F2）", aivmxUrl: "https://huggingface.co/AiMu1215/sbv2-jvnv-f2-int8/resolve/main/jvnv-F2-jp-int8.aivmx", stageLabel: "音響モデル (JVNV F2 / JP-Extra, int8) を取得", modelBytes: 75657062, modelSha256: "fd6275871ec612a9f5f539577bc56f0469ce448f602e3f53300b50ff670ddf65" },
+      f1: { label: "女性（F1）", aivmxUrl: "https://huggingface.co/AiMu1215/sbv2-jvnv-f1-int8/resolve/main/jvnv-F1-jp-int8.aivmx", stageLabel: "音響モデル (JVNV F1 / JP-Extra, int8) を取得", modelBytes: 75657068, modelSha256: "1bdccb8f69072434bcafc522c792a4764d103940ff63368db10a9b3ac834f0da" },
       yunomaru: { label: "男性（東部湯の丸）", shortName: "東部湯の丸", aivmxUrl: "https://huggingface.co/AiMu1215/sbv2-tobu-yunomaru-int8/resolve/main/tobu-yunomaru-int8.aivmx", stageLabel: "音響モデル (東部湯の丸, int8) を取得", modelBytes: 75648461, modelSha256: "6003356b1475a4eb879d2f23a93c972a2d7ba2c02299ae77873d2f3c4902069f", neutralOnly: true },
       tokujiro: { label: "男性（さくら徳次郎）", shortName: "さくら徳次郎", aivmxUrl: "https://huggingface.co/AiMu1215/sbv2-sakura-tokujiro-int8/resolve/main/sakura-tokujiro-int8.aivmx", stageLabel: "音響モデル (さくら徳次郎, int8) を取得", modelBytes: 75648454, modelSha256: "c77f02efd0fe4fa2aec332f5a20f7d8a0182f8f2f114d8b8181b312ab1c93cd5", neutralOnly: true },
       aoba: { label: "女性（横浜青葉）", shortName: "横浜青葉", aivmxUrl: "https://huggingface.co/AiMu1215/sbv2-yokohama-aoba-int8/resolve/main/yokohama-aoba-int8.aivmx", stageLabel: "音響モデル (横浜青葉, int8) を取得", modelBytes: 75648460, modelSha256: "78101381401af497638fc762fc9cefd5ee193dedf79f27eaf17faf30edff234d", neutralOnly: true }
@@ -3484,6 +3496,9 @@
     }
     talkText.addEventListener("input", refreshTalkCount);
     refreshTalkCount();
+    document.getElementById("talkClearBtn").addEventListener("click", function(){
+      talkText.value = ""; talkText.dispatchEvent(new Event("input", { bubbles: true }));
+    });
 
     function invalidateTalk(reason){
       if (!talkState.mp3Blob) return;
